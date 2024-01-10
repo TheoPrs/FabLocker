@@ -35,20 +35,26 @@ class MyHomePage extends StatelessWidget {
                 ),
               ),
             ),
-            SizedBox(height: 16.0,width: 50), // Ajoute un espace entre les zones de texte
-            TextField(
+            SizedBox(height: 20.0,width: 50), // Ajoute un espace entre les zones de texte
+            SizedBox(height: 50,width: 440,
+            child: TextField(
               decoration: InputDecoration(
                 labelText: 'Nom d\'utilisateur',
+                labelStyle: TextStyle(color: Colors.grey),
                 border: OutlineInputBorder(),
               ),
             ),
-            SizedBox(height: 16.0,width: 50), // Ajoute un espace entre les zones de texte
-            TextField(
+            ),
+            SizedBox(height: 20.0), // Ajoute un espace entre les zones de texte
+            SizedBox(height: 50,width: 440,
+            child: TextField(
               obscureText: true, // Pour masquer le texte (mot de passe)
               decoration: InputDecoration(
                 labelText: 'Mot de passe',
+                labelStyle: TextStyle(color: Colors.grey),
                 border: OutlineInputBorder(),
               ),
+            ),
             ),
             SizedBox(height: 16.0), // Ajoute un espace entre les zones de texte
             ElevatedButton(
