@@ -1,3 +1,4 @@
+import 'package:fablocker/adminpage.dart';
 import 'package:flutter/material.dart';
 import 'CasierPage.dart';
 
@@ -61,7 +62,7 @@ class MyHomePage extends StatelessWidget {
               onPressed: () {
                 Navigator.pushReplacement(
                   context,
-                  MaterialPageRoute(builder: (context) => CasierPage()),
+                  MaterialPageRoute(builder: (context) => Adminpage()),
                 );
                 print('Bouton appuyé!');
               },
