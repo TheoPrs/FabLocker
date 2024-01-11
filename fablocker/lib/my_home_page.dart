@@ -1,6 +1,38 @@
 import 'package:flutter/material.dart';
 
-class MyHomePage extends StatelessWidget {
+class MyHomePage extends StatefulWidget {
+  @override
+  _MyHomePageState createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
+  TextEditingController usernameController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance?.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    usernameController.dispose();
+    passwordController.dispose();
+    WidgetsBinding.instance?.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.inactive ||
+        state == AppLifecycleState.detached) {
+      // App est inactive ou détachée, vous pouvez effectuer des actions de nettoyage ici si nécessaire.
+      usernameController.dispose();
+      passwordController.dispose();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -29,6 +61,7 @@ class MyHomePage extends StatelessWidget {
               height: 50,
               width: 440,
               child: TextField(
+                controller: usernameController,
                 decoration: InputDecoration(
                   labelText: 'Nom d\'utilisateur',
                   labelStyle:
@@ -44,6 +77,7 @@ class MyHomePage extends StatelessWidget {
               height: 50,
               width: 440,
               child: TextField(
+                controller: passwordController,
                 obscureText: true, // Pour masquer le texte (mot de passe)
                 decoration: InputDecoration(
                   labelText: 'Mot de passe',
@@ -58,8 +92,11 @@ class MyHomePage extends StatelessWidget {
             SizedBox(height: 16.0), // Ajoute un espace entre les zones de texte
             ElevatedButton(
               onPressed: () {
-                // Action à effectuer lors de l'appui sur le bouton
-                print('Bouton appuyé!');
+                String username = usernameController.text;
+                String password = passwordController.text;
+
+                print('Nom d\'utilisateur : $username');
+                print('Mot de passe : $password');
               },
               child: Text('Se connecter'),
             ),
