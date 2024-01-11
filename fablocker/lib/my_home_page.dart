@@ -31,9 +31,12 @@ class MyHomePage extends StatelessWidget {
               child: TextField(
                 decoration: InputDecoration(
                   labelText: 'Nom d\'utilisateur',
-                  labelStyle: TextStyle(color: Colors.grey),
+                  labelStyle:
+                      TextStyle(color: Color.fromARGB(255, 255, 255, 255)),
                   border: OutlineInputBorder(),
                 ),
+                style: TextStyle(
+                    color: Colors.white), // Ajouté pour le texte en blanc
               ),
             ),
             SizedBox(height: 20.0), // Ajoute un espace entre les zones de texte
@@ -44,9 +47,12 @@ class MyHomePage extends StatelessWidget {
                 obscureText: true, // Pour masquer le texte (mot de passe)
                 decoration: InputDecoration(
                   labelText: 'Mot de passe',
-                  labelStyle: TextStyle(color: Colors.grey),
+                  labelStyle: TextStyle(
+                      color: const Color.fromARGB(255, 255, 255, 255)),
                   border: OutlineInputBorder(),
                 ),
+                style: TextStyle(
+                    color: Colors.white), // Ajouté pour le texte en blanc
               ),
             ),
             SizedBox(height: 16.0), // Ajoute un espace entre les zones de texte
