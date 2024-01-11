@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'CasierPage.dart';
 
 class MyHomePage extends StatelessWidget {
   @override
@@ -31,12 +32,12 @@ class MyHomePage extends StatelessWidget {
               child: TextField(
                 decoration: InputDecoration(
                   labelText: 'Nom d\'utilisateur',
-                  labelStyle:
-                      TextStyle(color: Color.fromARGB(255, 255, 255, 255)),
+                  labelStyle: TextStyle(
+                      color: Colors
+                          .white), // Utilisation de Colors.white pour la cohérence
                   border: OutlineInputBorder(),
                 ),
-                style: TextStyle(
-                    color: Colors.white), // Ajouté pour le texte en blanc
+                style: TextStyle(color: Colors.white), // Texte en blanc
               ),
             ),
             SizedBox(height: 20.0), // Ajoute un espace entre les zones de texte
@@ -48,17 +49,20 @@ class MyHomePage extends StatelessWidget {
                 decoration: InputDecoration(
                   labelText: 'Mot de passe',
                   labelStyle: TextStyle(
-                      color: const Color.fromARGB(255, 255, 255, 255)),
+                      color: Colors
+                          .white), // Utilisation de Colors.white pour la cohérence
                   border: OutlineInputBorder(),
                 ),
-                style: TextStyle(
-                    color: Colors.white), // Ajouté pour le texte en blanc
+                style: TextStyle(color: Colors.white), // Texte en blanc
               ),
             ),
             SizedBox(height: 16.0), // Ajoute un espace entre les zones de texte
             ElevatedButton(
               onPressed: () {
-                // Action à effectuer lors de l'appui sur le bouton
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => CasierPage()),
+                );
                 print('Bouton appuyé!');
               },
               child: Text('Se connecter'),
