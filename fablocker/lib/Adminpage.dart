@@ -1,3 +1,4 @@
+import 'package:fablocker/HistoriquePage.dart';
 import 'package:flutter/material.dart';
 
 class Adminpage extends StatelessWidget {
@@ -29,7 +30,11 @@ class Adminpage extends StatelessWidget {
         itemBuilder: (context, index) {
           return InkWell(
             onTap: () {
-              // TODO: Implement navigation to the detail page
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => HistoriquePage()),
+              );
+              // Si vous voulez imprimer aussi, vous pouvez conserver cette ligne.
               print('Case $index tapped');
             },
             child: Container(
