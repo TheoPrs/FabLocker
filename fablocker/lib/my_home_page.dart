@@ -1,20 +1,21 @@
 import 'package:fablocker/adminpage.dart';
 import 'package:flutter/material.dart';
-import 'CasierPage.dart';
 
 class MyHomePage extends StatelessWidget {
+  const MyHomePage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('FabLocker'),
+        title: const Text('FabLocker'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Align(
+            const Align(
               alignment: Alignment(0, -0.85),
               child: Text(
                 'Bienvenue sur votre application FabLocker !',
@@ -24,10 +25,10 @@ class MyHomePage extends StatelessWidget {
                 ),
               ),
             ),
-            SizedBox(
+            const SizedBox(
                 height: 20.0,
                 width: 50), // Ajoute un espace entre les zones de texte
-            SizedBox(
+            const SizedBox(
               height: 50,
               width: 440,
               child: TextField(
@@ -41,8 +42,9 @@ class MyHomePage extends StatelessWidget {
                 style: TextStyle(color: Colors.white), // Texte en blanc
               ),
             ),
-            SizedBox(height: 20.0), // Ajoute un espace entre les zones de texte
-            SizedBox(
+            const SizedBox(
+                height: 20.0), // Ajoute un espace entre les zones de texte
+            const SizedBox(
               height: 50,
               width: 440,
               child: TextField(
@@ -57,21 +59,21 @@ class MyHomePage extends StatelessWidget {
                 style: TextStyle(color: Colors.white), // Texte en blanc
               ),
             ),
-            SizedBox(height: 16.0), // Ajoute un espace entre les zones de texte
+            const SizedBox(
+                height: 16.0), // Ajoute un espace entre les zones de texte
             ElevatedButton(
               onPressed: () {
                 Navigator.pushReplacement(
                   context,
-                  MaterialPageRoute(builder: (context) => Adminpage()),
+                  MaterialPageRoute(builder: (context) => const AdminPage()),
                 );
-                print('Bouton appuyé!');
               },
-              child: Text('Se connecter'),
+              child: const Text('Se connecter'),
             ),
           ],
         ),
       ),
-      backgroundColor: Color(0xFF3C2A53),
+      backgroundColor: const Color(0xFF3C2A53),
     );
   }
 }

@@ -9,15 +9,12 @@ class Historique {
   Historique(this.casier, this.utilisateur, this.date);
 }
 
-// Ensuite, nous créerons la page historique qui affiche les données.
 class HistoriquePage extends StatelessWidget {
   final List<Historique> historiqueList = [
-    // Ici, vous pourriez charger les données depuis une base de données ou un service.
     Historique('Casier 1', 'Alice', DateTime.now().subtract(Duration(days: 1))),
     Historique('Casier 2', 'Bob', DateTime.now().subtract(Duration(days: 2))),
     Historique(
         'Casier 3', 'Charlie', DateTime.now().subtract(Duration(days: 3))),
-    // Ajoutez autant d'entrées que nécessaire.
   ];
 
   HistoriquePage({super.key});

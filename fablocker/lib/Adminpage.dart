@@ -1,8 +1,39 @@
-import 'package:fablocker/HistoriquePage.dart';
 import 'package:flutter/material.dart';
 
-class Adminpage extends StatelessWidget {
-  const Adminpage({super.key});
+class AdminPage extends StatelessWidget {
+  const AdminPage({Key? key}) : super(key: key);
+
+  void _showCasierOptions(BuildContext context, int index) async {
+    final selection = await showMenu(
+      context: context,
+      position: const RelativeRect.fromLTRB(100.0, 200.0, 100.0,
+          100.0), // Vous pouvez ajuster la position si nécessaire
+      items: [
+        const PopupMenuItem(
+          value: 'ouvrir',
+          child: Text('Ouvrir'),
+        ),
+        const PopupMenuItem(
+          value: 'informations',
+          child: Text('Informations'),
+        ),
+        // Ajoutez d'autres options ici
+      ],
+    );
+
+    // Effectuez des actions en fonction de l'option sélectionnée
+    switch (selection) {
+      case 'ouvrir':
+        // Logique pour ouvrir le casier
+        print('Ouvrir casier $index');
+        break;
+      case 'informations':
+        // Logique pour afficher les informations
+        break;
+      default:
+        print('Aucune action');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -29,23 +60,22 @@ class Adminpage extends StatelessWidget {
         itemCount: 16, // Nombre total de cases
         itemBuilder: (context, index) {
           return InkWell(
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => HistoriquePage()),
-              );
-              // Si vous voulez imprimer aussi, vous pouvez conserver cette ligne.
-              print('Case $index tapped');
-            },
+            onTap: () => _showCasierOptions(context, index),
             child: Container(
               decoration: BoxDecoration(
                 color: Colors.white,
                 border: Border.all(color: Colors.blue, width: 2),
               ),
-              child: Center(
+              child: const Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: const [
+                  children: [
+                    Text(
+                      'Casier : int index',
+                      style: TextStyle(
+                        color: Colors.black,
+                      ),
+                    ),
                     Text(
                       'Outil :',
                       style: TextStyle(

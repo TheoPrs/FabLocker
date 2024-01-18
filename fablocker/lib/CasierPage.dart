@@ -15,7 +15,7 @@ class CasierPage extends StatelessWidget {
               Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(builder: (context) => MyHomePage()),
-              ); // Logique de déconnexion
+              );
             },
           ),
         ],
