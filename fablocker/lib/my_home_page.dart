@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 
 class MyHomePage extends StatefulWidget {
+  const MyHomePage({super.key});
+
   @override
+  // ignore: library_private_types_in_public_api
   _MyHomePageState createState() => _MyHomePageState();
 }
 
@@ -12,14 +15,14 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance?.addObserver(this);
+    WidgetsBinding.instance.addObserver(this);
   }
 
   @override
   void dispose() {
     usernameController.dispose();
     passwordController.dispose();
-    WidgetsBinding.instance?.removeObserver(this);
+    WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
 
@@ -37,14 +40,14 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('FabLocker'),
+        title: const Text('FabLocker'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Align(
+            const Align(
               alignment: Alignment(0, -0.85),
               child: Text(
                 'Bienvenue sur votre application FabLocker !',
@@ -54,7 +57,7 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
                 ),
               ),
             ),
-            SizedBox(
+            const SizedBox(
                 height: 20.0,
                 width: 50), // Ajoute un espace entre les zones de texte
             SizedBox(
@@ -62,34 +65,34 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
               width: 440,
               child: TextField(
                 controller: usernameController,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: 'Nom d\'utilisateur',
                   labelStyle:
                       TextStyle(color: Color.fromARGB(255, 255, 255, 255)),
                   border: OutlineInputBorder(),
                 ),
-                style: TextStyle(
+                style: const TextStyle(
                     color: Colors.white), // Ajouté pour le texte en blanc
               ),
             ),
-            SizedBox(height: 20.0), // Ajoute un espace entre les zones de texte
+            const SizedBox(height: 20.0), // Ajoute un espace entre les zones de texte
             SizedBox(
               height: 50,
               width: 440,
               child: TextField(
                 controller: passwordController,
                 obscureText: true, // Pour masquer le texte (mot de passe)
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: 'Mot de passe',
                   labelStyle: TextStyle(
-                      color: const Color.fromARGB(255, 255, 255, 255)),
+                      color: Color.fromARGB(255, 255, 255, 255)),
                   border: OutlineInputBorder(),
                 ),
-                style: TextStyle(
+                style: const TextStyle(
                     color: Colors.white), // Ajouté pour le texte en blanc
               ),
             ),
-            SizedBox(height: 16.0), // Ajoute un espace entre les zones de texte
+            const SizedBox(height: 16.0), // Ajoute un espace entre les zones de texte
             ElevatedButton(
               onPressed: () {
                 String username = usernameController.text;
@@ -98,12 +101,12 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
                 print('Nom d\'utilisateur : $username');
                 print('Mot de passe : $password');
               },
-              child: Text('Se connecter'),
+              child: const Text('Se connecter'),
             ),
           ],
         ),
       ),
-      backgroundColor: Color(0xFF3C2A53),
+      backgroundColor: const Color(0xFF3C2A53),
     );
   }
 }
