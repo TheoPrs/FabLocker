@@ -3,11 +3,19 @@ import 'package:flutter/material.dart';
 class AdminPage extends StatelessWidget {
   const AdminPage({Key? key}) : super(key: key);
 
-  void _showCasierOptions(BuildContext context, int index) async {
+  void _showCasierOptions(BuildContext context, int index, GlobalKey key) async {
+    final RenderBox renderBox = key.currentContext?.findRenderObject() as RenderBox;
+    final Offset offset = renderBox.localToGlobal(Offset.zero);
+    final RelativeRect position = RelativeRect.fromLTRB(
+      offset.dx,
+      offset.dy,
+      offset.dx,
+      offset.dy,
+    );
+
     final selection = await showMenu(
       context: context,
-      position: const RelativeRect.fromLTRB(100.0, 200.0, 100.0,
-          100.0), // Vous pouvez ajuster la position si nécessaire
+      position: position, // Utilisez la position calculée ici
       items: [
         const PopupMenuItem(
           value: 'ouvrir',
@@ -59,36 +67,40 @@ class AdminPage extends StatelessWidget {
         ),
         itemCount: 16, // Nombre total de cases
         itemBuilder: (context, index) {
+          // Créez une GlobalKey pour chaque élément de la grille
+          final GlobalKey itemKey = GlobalKey();
+
           return InkWell(
-            onTap: () => _showCasierOptions(context, index),
+            key: itemKey, // Attribuez la clé ici
+            onTap: () => _showCasierOptions(context, index, itemKey),
             child: Container(
               decoration: BoxDecoration(
                 color: Colors.white,
                 border: Border.all(color: Colors.blue, width: 2),
               ),
-              child: const Center(
+              child: Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      'Casier : int index',
+                      'Casier : $index', // Assurez-vous d'utiliser la variable index ici
                       style: TextStyle(
                         color: Colors.black,
                       ),
                     ),
-                    Text(
+                    const Text(
                       'Outil :',
                       style: TextStyle(
                         color: Colors.black,
                       ),
                     ),
-                    Text(
+                    const Text(
                       'Disponibilité :',
                       style: TextStyle(
                         color: Colors.black,
                       ),
                     ),
-                    Text(
+                    const Text(
                       'État :',
                       style: TextStyle(
                         color: Colors.black,
@@ -103,4 +115,8 @@ class AdminPage extends StatelessWidget {
       ),
     );
   }
+}
+
+void main() {
+  runApp(const MaterialApp(home: AdminPage()));
 }
