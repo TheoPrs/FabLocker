@@ -91,17 +91,16 @@ class _MyHomePageState extends State<MyHomePage> {
                   } else if ((!usernameRegExp.hasMatch(username)) || (!passwordRegExp.hasMatch(password))) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
-                        content: Text('L\adresse e-mail doit être ecrite au format xx@yy.zz et le mot de passe au format valide.'),
+                        content: Text('L\'adresse e-mail doit être ecrite au format isen@junia.com et le mot de passe au format valide.'),
                       ),
                     );
                   } else {
-                    if (username == "to@gmail.com" && password == "azertyuio1") {
+                    if (username == "theo@junia.student.com" && password == "17022001Tp") {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
                           content: Text('Bienvenue'),
                         ),
                       );
-                      // Vérifier la logique pour les utilisateurs if ()
                     }
                     else{
                         ScaffoldMessenger.of(context).showSnackBar(
