@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key?key});
+  const MyHomePage({Key? key});
 
   @override
   _MyHomePageState createState() => _MyHomePageState();
@@ -11,6 +11,8 @@ class _MyHomePageState extends State<MyHomePage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   TextEditingController usernameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  final RegExp usernameRegExp = RegExp(r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$');
+  final RegExp passwordRegExp = RegExp(r'^[a-zA-Z0-9]{8,}$'); // Exige au moins 8 caractères alphanumériques
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +50,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 child: TextField(
                   controller: usernameController,
                   decoration: const InputDecoration(
-                    labelText: 'Nom d\'utilisateur',
+                    labelText: 'Adresse e-mail',
                     labelStyle: TextStyle(color: Color.fromARGB(255, 255, 255, 255)),
                     border: OutlineInputBorder(),
                   ),
@@ -80,22 +82,35 @@ class _MyHomePageState extends State<MyHomePage> {
                   String username = usernameController.text;
                   String password = passwordController.text;
 
-                  if (username.isEmpty|| password.isEmpty) {  
-                      ScaffoldMessenger.of(context).showSnackBar(
+                  if (username.isEmpty || password.isEmpty) {
+                    ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
                         content: Text('Veuillez bien entrer un nom d\'utilisateur ainsi qu\'un mot de passe !'),
                       ),
                     );
-                    // Si mdp et username correct rediriger vers la page suivante
-                  } else if(username=='test' && password=='test') {
-                    //Vérifier si l'utilsateur existe
-                  }
-                  else{
-                      ScaffoldMessenger.of(context).showSnackBar(
+                  } else if ((!usernameRegExp.hasMatch(username)) || (!passwordRegExp.hasMatch(password))) {
+                    ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
-                        content: Text('Nom d\'utilisateur ou mot de passe incorrect.'),
+                        content: Text('L\adresse e-mail doit être ecrite au format xx@yy.zz et le mot de passe au format valide.'),
                       ),
                     );
+                  } else {
+                    if (username == "to@gmail.com" && password == "azertyuio1") {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Bienvenue'),
+                        ),
+                      );
+                      // Vérifier la logique pour les utilisateurs if ()
+                    }
+                    else{
+                        ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Adresse e-mail ou mot de passe incorrect !'),
+                        ),
+                      );
+                    }
+                  
                   }
                 },
                 child: const Text('Se connecter'),
