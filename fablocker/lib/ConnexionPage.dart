@@ -1,8 +1,8 @@
-import 'package:fablocker/adminpage.dart';
+import 'package:fablocker/PrincipalePage.dart';
 import 'package:flutter/material.dart';
 
-class MyHomePage extends StatelessWidget {
-  const MyHomePage({super.key});
+class ConnexionPage extends StatelessWidget {
+  const ConnexionPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -65,7 +65,8 @@ class MyHomePage extends StatelessWidget {
               onPressed: () {
                 Navigator.pushReplacement(
                   context,
-                  MaterialPageRoute(builder: (context) => const AdminPage()),
+                  MaterialPageRoute(
+                      builder: (context) => const PrincipalePage()),
                 );
               },
               child: const Text('Se connecter'),

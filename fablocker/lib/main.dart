@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'my_home_page.dart'; // Import du fichier contenant MyHomePage
+import 'ConnexionPage.dart'; // Import du fichier contenant MyHomePage
 
 void main() {
   runApp(MyApp());
@@ -8,8 +8,8 @@ void main() {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: MyHomePage(),
+    return const MaterialApp(
+      home: ConnexionPage(),
     );
   }
 }

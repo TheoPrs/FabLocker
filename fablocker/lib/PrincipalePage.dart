@@ -1,10 +1,15 @@
+// ignore_for_file: avoid_print, file_names
+
+import 'package:fablocker/HistoriquePage.dart';
 import 'package:flutter/material.dart';
 
-class AdminPage extends StatelessWidget {
-  const AdminPage({Key? key}) : super(key: key);
+class PrincipalePage extends StatelessWidget {
+  const PrincipalePage({Key? key}) : super(key: key);
 
-  void _showCasierOptions(BuildContext context, int index, GlobalKey key, bool isAdmin) async {
-    final RenderBox renderBox = key.currentContext?.findRenderObject() as RenderBox;
+  void _showCasierOptions(
+      BuildContext context, int index, GlobalKey key, bool isAdmin) async {
+    final RenderBox renderBox =
+        key.currentContext?.findRenderObject() as RenderBox;
     final Offset offset = renderBox.localToGlobal(Offset.zero);
     final RelativeRect position = RelativeRect.fromLTRB(
       offset.dx,
@@ -12,7 +17,6 @@ class AdminPage extends StatelessWidget {
       offset.dx,
       offset.dy,
     );
-
 
     List<PopupMenuEntry<String>> menuItems = [
       const PopupMenuItem(
@@ -24,7 +28,6 @@ class AdminPage extends StatelessWidget {
         child: Text('Informations'),
       ),
     ];
-
 
     if (isAdmin) {
       menuItems.add(
@@ -41,7 +44,6 @@ class AdminPage extends StatelessWidget {
       items: menuItems,
     );
 
- 
     switch (selection) {
       case 'ouvrir':
         // Logique pour ouvrir le casier
@@ -51,7 +53,10 @@ class AdminPage extends StatelessWidget {
         // Logique pour afficher les informations
         break;
       case 'historique':
-        // Logique pour ouvrir l'historique
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => HistoriquePage()),
+        );
         print('Ouvrir historique pour casier $index');
         break;
       default:
@@ -61,7 +66,7 @@ class AdminPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bool isAdmin = true; 
+    final bool isAdmin = true;
 
     return Scaffold(
       appBar: AppBar(
@@ -133,8 +138,4 @@ class AdminPage extends StatelessWidget {
       ),
     );
   }
-}
-
-void main() {
-  runApp(const MaterialApp(home: AdminPage()));
 }
