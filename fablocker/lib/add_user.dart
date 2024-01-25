@@ -13,7 +13,7 @@ class _addUsers extends State<addUsers> {
   TextEditingController passwordController = TextEditingController();
   TextEditingController checkPasswordController = TextEditingController();
   final RegExp usernameRegExp = RegExp(r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$');
-  final RegExp passwordRegExp = RegExp(r'^[a-zA-Z0-9]{8,}$'); // Exige au moins 8 caractères alphanumériques
+  final RegExp passwordRegExp = RegExp(r'^[a-zA-Z0-9]{8,}$'); 
 
   @override
   Widget build(BuildContext context) {
@@ -132,12 +132,9 @@ class _addUsers extends State<addUsers> {
                         content: Text('Profil créé avec succès !'),
                       ),
                     );
-                    print("username : ${username}");
-                    print("password : ${password}");
-                    print("checkPassword : ${password}");
                    }
                 },
-                child: const Text('Se connecter'),
+                child: const Text('Créer l\'utilsateur'),
               ),
             ],
           ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import './widgets/displayFloat.dart';
 import 'package:flutter/services.dart';
+import './widgets/singleChoice.dart';
 
 class addItems extends StatefulWidget{
   const addItems({Key? key});
@@ -15,6 +16,7 @@ class _addItems extends State<addItems> {
   TextEditingController object_description = TextEditingController();
   TextEditingController object_loan_duration = TextEditingController();
   double myValue = 450.15;
+  var typeDeCasier = ['Petit casier', 'Casier moyen', 'Grand casier'];
   
 
   @override
@@ -98,15 +100,24 @@ class _addItems extends State<addItems> {
                 ),
               ),
               const SizedBox(height:20.0),
-              FloatDisplayWidget(floatValue: myValue),
+              SizedBox(
+                height: 60,
+                child: FloatDisplayWidget(floatValue: myValue),
+              ),
+              const SizedBox(height:20.0),
+              SizedBox(
+                width: 200,
+                height: 50*typeDeCasier.length.toDouble(),
+                child: SingleChoiceWidget(choices: typeDeCasier)),
               const SizedBox(height:20.0),
               ElevatedButton(
                 onPressed: () {
-                  String object = object_name.text;
-                  String description = object_description.text;
-                  print(description);
+                  //int selectedValue = SingleChoiceWidget().getSelectedChoice();
+                  //String object = object_name.text;
+                  //String description = object_description.text;
+                  //int loan_duration = int.parse(object_loan_duration.text);
                   },
-                child: const Text('Se connecter'),
+                child: const Text('Créer l\'objet'),
               ),
             ],
           ),
