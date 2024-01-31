@@ -1,10 +1,29 @@
-// ignore_for_file: avoid_print, file_names
+// ignore_for_file: avoid_print, file_names, use_build_context_synchronously
 
 import 'package:fablocker/HistoriquePage.dart';
 import 'package:flutter/material.dart';
 
+class ToolInfo {
+  String name;
+  String status;
+  String description;
+
+  ToolInfo(
+      {required this.name, required this.status, required this.description});
+}
+
 class PrincipalePage extends StatelessWidget {
-  const PrincipalePage({Key? key}) : super(key: key);
+  PrincipalePage({Key? key}) : super(key: key);
+
+  // Exemple de liste des outils
+  final List<ToolInfo> tools = List.generate(
+    16,
+    (index) => ToolInfo(
+      name: 'Outil $index',
+      status: 'Disponible',
+      description: 'Très bo outils',
+    ),
+  );
 
   void _showCasierOptions(
       BuildContext context, int index, GlobalKey key, bool isAdmin) async {
@@ -50,13 +69,14 @@ class PrincipalePage extends StatelessWidget {
         print('Ouvrir casier $index');
         break;
       case 'informations':
-        // Logique pour afficher les informations
+        _showToolInformationDialog(context, tools[index]);
         break;
       case 'historique':
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => HistoriquePage()),
         );
+
         print('Ouvrir historique pour casier $index');
         break;
       default:
@@ -64,9 +84,38 @@ class PrincipalePage extends StatelessWidget {
     }
   }
 
+  void _showToolInformationDialog(BuildContext context, ToolInfo toolInfo) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Informations de l\'Outil'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text('Nom de l\'Outil : ${toolInfo.name}'),
+                Text('Statut : ${toolInfo.status}'),
+                Text('Description: ${toolInfo.description}')
+                // Ajoutez d'autres informations ici si nécessaire
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text('Fermer'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    final bool isAdmin = true;
+    final bool isAdmin = true; // Modifier selon la logique de votre application
 
     return Scaffold(
       appBar: AppBar(
@@ -75,7 +124,7 @@ class PrincipalePage extends StatelessWidget {
           IconButton(
             icon: const Icon(Icons.exit_to_app),
             onPressed: () {
-              // TODO: Implement logout logic
+              // Logique de déconnexion
             },
           ),
         ],
@@ -88,7 +137,7 @@ class PrincipalePage extends StatelessWidget {
           mainAxisSpacing: 10.0,
           childAspectRatio: 1,
         ),
-        itemCount: 16,
+        itemCount: tools.length,
         itemBuilder: (context, index) {
           // Créer une GlobalKey pour chaque élément de la grille.
           final GlobalKey itemKey = GlobalKey();

@@ -32,7 +32,7 @@ class HistoriquePage extends StatelessWidget {
           onPressed: () {
             Navigator.pushReplacement(
               context,
-              MaterialPageRoute(builder: (context) => const PrincipalePage()),
+              MaterialPageRoute(builder: (context) => PrincipalePage()),
             );
           },
         ),

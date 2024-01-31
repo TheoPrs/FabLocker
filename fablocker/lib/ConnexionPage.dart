@@ -34,39 +34,32 @@ class ConnexionPage extends StatelessWidget {
               child: TextField(
                 decoration: InputDecoration(
                   labelText: 'Nom d\'utilisateur',
-                  labelStyle: TextStyle(
-                      color: Colors
-                          .white), // Utilisation de Colors.white pour la cohérence
+                  labelStyle: TextStyle(color: Colors.white),
                   border: OutlineInputBorder(),
                 ),
-                style: TextStyle(color: Colors.white), // Texte en blanc
+                style: TextStyle(color: Colors.white),
               ),
             ),
-            const SizedBox(
-                height: 20.0), // Ajoute un espace entre les zones de texte
+            const SizedBox(height: 20.0),
             const SizedBox(
               height: 50,
               width: 440,
               child: TextField(
-                obscureText: true, // Pour masquer le texte (mot de passe)
+                obscureText: true,
                 decoration: InputDecoration(
                   labelText: 'Mot de passe',
-                  labelStyle: TextStyle(
-                      color: Colors
-                          .white), // Utilisation de Colors.white pour la cohérence
+                  labelStyle: TextStyle(color: Colors.white),
                   border: OutlineInputBorder(),
                 ),
-                style: TextStyle(color: Colors.white), // Texte en blanc
+                style: TextStyle(color: Colors.white),
               ),
             ),
-            const SizedBox(
-                height: 16.0), // Ajoute un espace entre les zones de texte
+            const SizedBox(height: 16.0),
             ElevatedButton(
               onPressed: () {
                 Navigator.pushReplacement(
                   context,
-                  MaterialPageRoute(
-                      builder: (context) => const PrincipalePage()),
+                  MaterialPageRoute(builder: (context) => PrincipalePage()),
                 );
               },
               child: const Text('Se connecter'),
