@@ -1,7 +1,8 @@
 import 'package:fablocker/PrincipalePage.dart';
 import 'package:flutter/material.dart';
+import 'PrincipalePage.dart';
 
-<<<<<<< HEAD:fablocker/lib/my_home_page.dart
+
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key});
 
@@ -15,10 +16,6 @@ class _MyHomePageState extends State<MyHomePage> {
   TextEditingController passwordController = TextEditingController();
   final RegExp usernameRegExp = RegExp(r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$');
   final RegExp passwordRegExp = RegExp(r'^[a-zA-Z0-9]{8,}$'); // Exige au moins 8 caractères alphanumériques
-=======
-class ConnexionPage extends StatelessWidget {
-  const ConnexionPage({super.key});
->>>>>>> application_flutter:fablocker/lib/ConnexionPage.dart
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +24,6 @@ class ConnexionPage extends StatelessWidget {
       appBar: AppBar(
         title: const Text('FabLocker'),
       ),
-<<<<<<< HEAD:fablocker/lib/my_home_page.dart
       body: Container(
         decoration: const BoxDecoration(
           image: DecorationImage(
@@ -88,7 +84,7 @@ class ConnexionPage extends StatelessWidget {
                 onPressed: () {
                   String username = usernameController.text;
                   String password = passwordController.text;
-
+                  
                   if (username.isEmpty || password.isEmpty) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
@@ -108,6 +104,10 @@ class ConnexionPage extends StatelessWidget {
                           content: Text('Bienvenue'),
                         ),
                       );
+                        Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => PrincipalePage()),
+                      );
                     }
                     else{
                         ScaffoldMessenger.of(context).showSnackBar(
@@ -124,66 +124,6 @@ class ConnexionPage extends StatelessWidget {
           ),
         ),
       ),
-=======
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Align(
-              alignment: Alignment(0, -0.85),
-              child: Text(
-                'Bienvenue sur votre application FabLocker !',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 24.0,
-                ),
-              ),
-            ),
-            const SizedBox(
-                height: 20.0,
-                width: 50), // Ajoute un espace entre les zones de texte
-            const SizedBox(
-              height: 50,
-              width: 440,
-              child: TextField(
-                decoration: InputDecoration(
-                  labelText: 'Nom d\'utilisateur',
-                  labelStyle: TextStyle(color: Colors.white),
-                  border: OutlineInputBorder(),
-                ),
-                style: TextStyle(color: Colors.white),
-              ),
-            ),
-            const SizedBox(height: 20.0),
-            const SizedBox(
-              height: 50,
-              width: 440,
-              child: TextField(
-                obscureText: true,
-                decoration: InputDecoration(
-                  labelText: 'Mot de passe',
-                  labelStyle: TextStyle(color: Colors.white),
-                  border: OutlineInputBorder(),
-                ),
-                style: TextStyle(color: Colors.white),
-              ),
-            ),
-            const SizedBox(height: 16.0),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (context) => PrincipalePage()),
-                );
-              },
-              child: const Text('Se connecter'),
-            ),
-          ],
-        ),
-      ),
-      backgroundColor: const Color(0xFF3C2A53),
->>>>>>> application_flutter:fablocker/lib/ConnexionPage.dart
     );
   }
 }

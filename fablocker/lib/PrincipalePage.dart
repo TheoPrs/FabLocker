@@ -2,6 +2,7 @@
 
 import 'package:fablocker/HistoriquePage.dart';
 import 'package:flutter/material.dart';
+import 'ConnexionPage.dart';
 
 class ToolInfo {
   String name;
@@ -124,7 +125,10 @@ class PrincipalePage extends StatelessWidget {
           IconButton(
             icon: const Icon(Icons.exit_to_app),
             onPressed: () {
-              // Logique de déconnexion
+                Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => MyHomePage()),
+              );
             },
           ),
         ],
