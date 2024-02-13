@@ -1,5 +1,3 @@
-// ignore_for_file: avoid_print, file_names, use_build_context_synchronously
-
 import 'package:fablocker/HistoriquePage.dart';
 import 'package:flutter/material.dart';
 import 'ConnexionPage.dart';
@@ -96,7 +94,7 @@ class PrincipalePage extends StatelessWidget {
               children: <Widget>[
                 Text('Nom de l\'Outil : ${toolInfo.name}'),
                 Text('Statut : ${toolInfo.status}'),
-                Text('Description: ${toolInfo.description}')
+                Text('Description: ${toolInfo.description}'),
                 // Ajoutez d'autres informations ici si nécessaire
               ],
             ),
@@ -120,12 +118,12 @@ class PrincipalePage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Page Admin'),
+        title: const Text('Page d\'accueil'),
         actions: [
           IconButton(
             icon: const Icon(Icons.exit_to_app),
             onPressed: () {
-                Navigator.push(
+              Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => MyHomePage()),
               );
@@ -133,61 +131,70 @@ class PrincipalePage extends StatelessWidget {
           ),
         ],
       ),
-      body: GridView.builder(
-        padding: const EdgeInsets.all(10.0),
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 4,
-          crossAxisSpacing: 10.0,
-          mainAxisSpacing: 10.0,
-          childAspectRatio: 1,
+      body: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          border: Border.all(color: Colors.blue, width: 2),
+          image: const DecorationImage(
+            image: AssetImage('assets/background.png'),
+            fit: BoxFit.cover,
+          ),
         ),
-        itemCount: tools.length,
-        itemBuilder: (context, index) {
-          // Créer une GlobalKey pour chaque élément de la grille.
-          final GlobalKey itemKey = GlobalKey();
+        child: GridView.builder(
+          padding: const EdgeInsets.all(10.0),
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 4,
+            crossAxisSpacing: 10.0,
+            mainAxisSpacing: 10.0,
+            childAspectRatio: 1,
+          ),
+          itemCount: tools.length, //16
+          itemBuilder: (context, index) {
+            // Créer une GlobalKey pour chaque élément de la grille.
+            final GlobalKey itemKey = GlobalKey();
 
-          return InkWell(
-            key: itemKey,
-            onTap: () => _showCasierOptions(context, index, itemKey, isAdmin),
-            child: Container(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                border: Border.all(color: Colors.blue, width: 2),
-              ),
-              child: Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      'Casier : $index',
-                      style: const TextStyle(
-                        color: Colors.black,
+            return InkWell(
+              key: itemKey,
+              onTap: () => _showCasierOptions(context, index, itemKey, isAdmin),
+              child: Container(
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.white, width: 2),
+                ),
+                child: Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        'Casier : $index',
+                        style: const TextStyle(
+                          color: Colors.white,
+                        ),
                       ),
-                    ),
-                    const Text(
-                      'Outil :',
-                      style: TextStyle(
-                        color: Colors.black,
+                      const Text(
+                        'Outil :',
+                        style: TextStyle(
+                          color: Colors.white,
+                        ),
                       ),
-                    ),
-                    const Text(
-                      'Disponibilité :',
-                      style: TextStyle(
-                        color: Colors.black,
+                      const Text(
+                        'Disponibilité :',
+                        style: TextStyle(
+                          color: Colors.white,
+                        ),
                       ),
-                    ),
-                    const Text(
-                      'État :',
-                      style: TextStyle(
-                        color: Colors.black,
+                      const Text(
+                        'État :',
+                        style: TextStyle(
+                          color: Colors.white,
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
-            ),
-          );
-        },
+            );
+          },
+        ),
       ),
     );
   }
