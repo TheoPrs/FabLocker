@@ -119,17 +119,6 @@ class PrincipalePage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Page d\'accueil'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.exit_to_app),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => MyHomePage()),
-              );
-            },
-          ),
-        ],
       ),
       body: Container(
         decoration: BoxDecoration(
