@@ -1,6 +1,5 @@
 import 'package:fablocker/PrincipalePage.dart';
 import 'package:flutter/material.dart';
-import 'PrincipalePage.dart';
 
 
 class MyHomePage extends StatefulWidget {
@@ -84,6 +83,8 @@ class _MyHomePageState extends State<MyHomePage> {
                 onPressed: () {
                   String username = usernameController.text;
                   String password = passwordController.text;
+                  String testUsername = "theo@junia.student.com";
+                  String testPassword = "17022001Tp";
                   
                   if (username.isEmpty || password.isEmpty) {
                     ScaffoldMessenger.of(context).showSnackBar(
@@ -98,7 +99,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       ),
                     );
                   } else {
-                    if (username == "theo@junia.student.com" && password == "17022001Tp") {
+                    if (username == testUsername && password == testPassword) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
                           content: Text('Bienvenue'),

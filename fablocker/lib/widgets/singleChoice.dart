@@ -25,7 +25,7 @@ class _SingleChoiceWidgetState extends State<SingleChoiceWidget> {
           return RadioListTile(
             title: Text(
               widget.choices[index],
-              style: TextStyle(
+              style: const TextStyle(
                 color: Colors.white, // Changer la couleur du texte ici
               ),
             ),
