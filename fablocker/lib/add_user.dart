@@ -153,8 +153,9 @@ class _addUsersState extends State<addUsers> {
                       if (response.statusCode == 201) {
                         // Succès de la requête
                         print('Profil créé avec succès !');
+                      } else if (response.statusCode == 400){
+                        print('Le RFID est déjà attribué');
                       } else {
-                        // Gestion des erreurs
                         print('Erreur lors de la création du profil: ${response.statusCode}');
                       }
                     } catch (e) {
