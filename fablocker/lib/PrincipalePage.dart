@@ -19,7 +19,7 @@ class PrincipalePage extends StatelessWidget {
     16,
     (index) => ToolInfo(
       name: 'Outil $index',
-      status: 'Disponible',
+      status: 'Disponible $index',
       description: 'Très bo outils',
     ),
   );
@@ -114,7 +114,7 @@ class PrincipalePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bool isAdmin = true; // Modifier selon la logique de votre application
+    const bool isAdmin = true; // Modifier selon la logique de votre application
 
     return Scaffold(
       appBar: AppBar(
@@ -125,7 +125,7 @@ class PrincipalePage extends StatelessWidget {
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => MyHomePage()),
+                MaterialPageRoute(builder: (context) => const MyHomePage()),
               );
             },
           ),

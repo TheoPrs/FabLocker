@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'Style/style.dart';
+import 'dart:math';
+import 'PrincipalePage.dart';
 
 class addUsers extends StatefulWidget {
   const addUsers({Key? key}) : super(key: key);
@@ -44,7 +46,7 @@ class _addUsersState extends State<addUsers> {
                   style: titleStyle,
                 ),
               ),
-              const SizedBox(height: 40.0),
+              const SizedBox(height: 50.0),
               //Adresse email
               SizedBox(
                 height: 50,
@@ -91,10 +93,10 @@ class _addUsersState extends State<addUsers> {
                   style: inputStyle,
                 ),
               ),
-              const SizedBox(height: 30.0),
-              //Bouton envoie formulaire
+              const SizedBox(height: 50.0),
               ElevatedButton(
                 onPressed: () async {
+
                   String username = usernameController.text;
                   String password = passwordController.text;
                   String checkPassword = checkPasswordController.text;
@@ -130,17 +132,24 @@ class _addUsersState extends State<addUsers> {
                       ),
                     );
 
+
+                    Random random = Random();
+                    int number = random.nextInt(999999); 
                     User newUser = User(
-                      rfid: 1454587,
+                      rfid: number,
                       admin: false,
                       mail: username,
                       password: password,
                     );
 
-                    // Convertir l'objet newUser en JSON
+
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => PrincipalePage()),
+                      );
+
                     Map<String, dynamic> userData = newUser.toJson();
 
-                    // Envoyer les données à l'API
                     try {
                       final response = await http.post(
                         Uri.parse('http://localhost:3000/api/users'),
@@ -151,7 +160,6 @@ class _addUsersState extends State<addUsers> {
                       );
 
                       if (response.statusCode == 201) {
-                        // Succès de la requête
                         print('Profil créé avec succès !');
                       } else if (response.statusCode == 400){
                         print('Le RFID est déjà attribué');
@@ -186,7 +194,6 @@ class User {
     required this.password,
   });
 
-  // Méthode pour convertir l'objet User en un objet JSON
   Map<String, dynamic> toJson() {
     return {
       'rfid': rfid,
