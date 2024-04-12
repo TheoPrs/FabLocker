@@ -1,3 +1,5 @@
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import './widgets/displayFloat.dart';
 import 'package:flutter/services.dart';
@@ -131,17 +133,44 @@ class _addItems extends State<addItems> {
               
               //Bouton "Créer l'objet"
               ElevatedButton(
-                onPressed: () {
-                  //METHODE POST 
+                onPressed: () async {
+                  // if( object_name.text.isEmpty || object_description.text.isEmpty || object_loan_duration.text.isEmpty ){
+                  //   print("test");
+                  // }
                   
-                  //int selectedValue = SingleChoiceWidget.getSelectedChoice();
                   String object = object_name.text;
                   String description = object_description.text;
-                  int loan_duration = int.parse(object_loan_duration.text);
+                  int loanDuration = int.parse(object_loan_duration.text);
                   
-                  if (object.isEmpty | description.isEmpty | loan_duration.isNaN){
-                      //print(selectedValue);
-                  }
+                  Item item = Item(
+                    name: object,
+                    description: description,
+                    loanDuration: loanDuration,
+                    weight: myValue,
+                  );
+
+
+                  Map<String, dynamic> itemData = item.toJson();
+
+                    try {
+                      final response = await http.post(
+                        Uri.parse('http://localhost:3000/api/items'),
+                        body: jsonEncode(itemData),
+                        headers: <String, String>{
+                          'Content-Type': 'application/json; charset=UTF-8',
+                        },
+                      );
+
+                      if (response.statusCode == 201) {
+                        print('Objet créé avec succès !');
+                      } else if (response.statusCode == 400){
+                        print('test');
+                      } else {
+                        print('Erreur lors de la création de l\'objet\': ${response.statusCode}');
+                      }
+                    } catch (e) {
+                      print('Erreur lors de la requête: $e');
+                    }
                   },
                 child: const Text('Créer l\'objet'),
               ),
@@ -150,5 +179,29 @@ class _addItems extends State<addItems> {
         ),
       ),
     );
+  }
+}
+
+
+class Item {
+  final String name;
+  final String description;
+  final int loanDuration;
+  final double weight;
+
+  Item({
+    required this.name,
+    required this.description,
+    required this.loanDuration,
+    required this.weight,
+  });
+
+  Map<String, dynamic> toJson() {
+    return {
+      'name': name,
+      'description': description,
+      'loanDuration' : loanDuration,
+      'weight': weight,
+    };
   }
 }

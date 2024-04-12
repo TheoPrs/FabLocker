@@ -18,3 +18,9 @@ const TextStyle inputStyle = TextStyle(
   fontSize: 17.0,
   color: Colors.white,
 );
+
+const TextStyle basicText = TextStyle(
+  fontFamily: 'Montserrat',
+  fontSize: 20,
+  color : Colors.white,
+);

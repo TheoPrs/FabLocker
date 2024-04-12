@@ -73,13 +73,10 @@ class PrincipalePage extends StatelessWidget {
       case 'historique':
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => HistoriquePage()),
+          MaterialPageRoute(builder: (context) => HistoriquePage(data: index,)),
         );
-
-        print('Ouvrir historique pour casier $index');
         break;
       default:
-        print('Aucune action');
     }
   }
 

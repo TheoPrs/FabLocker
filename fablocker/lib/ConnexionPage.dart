@@ -79,6 +79,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   const String testUsername = "test@junia.com";
                   const String testPassword = "Password1";
                   
+                  //get accessToken (username,password)
                   if (username.isEmpty || password.isEmpty) {
                     _showSnackBar('Veuillez bien entrer un nom d\'utilisateur ainsi qu\'un mot de passe !');
                   } else if ((!usernameRegExp.hasMatch(username)) || (!passwordRegExp.hasMatch(password))) {
