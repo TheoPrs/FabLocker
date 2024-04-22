@@ -1,12 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'HistoriquePage.dart';
 
 class ToolInfo {
+  int id_locker;
+  bool availability;
+  int weight;
   String name;
   String status;
   String description;
 
   ToolInfo({
+    required this.id_locker,
+    required this.availability,
+    required this.weight,
     required this.name,
     required this.status,
     required this.description,
@@ -16,20 +24,27 @@ class ToolInfo {
 List<ToolInfo> tools = [];
 
 List<ToolInfo> parseData(String jsonData) {
-  // Implémentez la logique de parsing ici
-  return [];
+  List<ToolInfo> parsedData = [];
+  final List<dynamic> data = json.decode(jsonData);
+  for (var item in data) {
+    parsedData.add(ToolInfo(
+      id_locker: item['id_locker'],
+      availability: item['availability'],
+      weight: item['weight'],
+      name: item['name'],
+      status: item['availability'] ? 'Disponible' : 'Indisponible',
+      description: item['description'],
+    ));
+  }
+  return parsedData;
 }
 
 Future<void> fetchData() async {
   final response = await http.get(Uri.parse('http://localhost:3000/api/items'));
   if (response.statusCode == 200) {
     final jsonData = response.body;
-    print(jsonData); // Afficher les données récupérées
     tools = parseData(jsonData);
-  
-    // Vous pouvez traiter les données ici selon vos besoins
   } else {
-    // Gérer les erreurs de requête
     print('Erreur de requête: ${response.statusCode}');
   }
 }
@@ -45,13 +60,12 @@ class _PrincipalePageState extends State<PrincipalePage> {
   @override
   void initState() {
     super.initState();
-    // Appeler fetchData lorsque la page est construite
     fetchData();
   }
 
   @override
   Widget build(BuildContext context) {
-    const bool isAdmin = true; // Modifier selon la logique de votre application
+    const bool isAdmin = true; 
 
     return Scaffold(
       appBar: AppBar(
@@ -60,7 +74,7 @@ class _PrincipalePageState extends State<PrincipalePage> {
           IconButton(
             icon: const Icon(Icons.exit_to_app),
             onPressed: () {
-              Navigator.pop(context); // Retour à l'écran précédent
+              Navigator.pop(context); 
             },
           ),
         ],
@@ -82,10 +96,11 @@ class _PrincipalePageState extends State<PrincipalePage> {
             mainAxisSpacing: 10.0,
             childAspectRatio: 1,
           ),
-          itemCount: tools.length, // Utilise la longueur de la liste tools
+          itemCount: tools.length, 
           itemBuilder: (context, index) {
-            // Créer une GlobalKey pour chaque élément de la grille.
             final GlobalKey itemKey = GlobalKey();
+            bool? stateAvailability = tools[index].availability;
+            final String textAvailability = stateAvailability == true ? 'Ouvert' : 'Fermé';
 
             return InkWell(
               key: itemKey,
@@ -99,25 +114,25 @@ class _PrincipalePageState extends State<PrincipalePage> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        'Casier : ${tools[index].name}',
+                        'Casier : ${tools[index].id_locker}',
                         style: const TextStyle(
                           color: Colors.white,
                         ),
                       ),
                       Text(
-                        'Outil : ${tools[index].status}',
+                        'Outil : ${tools[index].name}',
                         style: const TextStyle(
                           color: Colors.white,
                         ),
                       ),
                       Text(
-                        'Disponibilité : ${tools[index].description}',
+                        'Disponibilité : $textAvailability',
                         style: const TextStyle(
                           color: Colors.white,
                         ),
                       ),
-                      const Text(
-                        'État :',
+                      Text(
+                        'État : ${tools[index].status}',
                         style: TextStyle(
                           color: Colors.white,
                         ),
@@ -180,7 +195,10 @@ class _PrincipalePageState extends State<PrincipalePage> {
         _showToolInformationDialog(context, tools[index]);
         break;
       case 'historique':
-        // À remplacer par votre navigation vers la page Historique
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => HistoriquePage(data: tools[index].id_locker,)),
+        );
         print('Navigation vers la page Historique');
         break;
       default:

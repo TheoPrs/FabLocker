@@ -17,9 +17,9 @@ class Historique {
 class HistoriquePage extends StatelessWidget {
   final int data;
   final List<Historique> historiqueList = [
-    Historique(0, 'objet1','Alice', DateTime(2024,4,12,0,46),DateTime(2025,4,12,0,46)),
-    Historique(0, 'objet1','Alice', DateTime(2024,4,12,0,46),DateTime(2025,4,12,0,46)),
-    Historique(0, 'objet3','Bob', DateTime(2024,4,20,21,45), DateTime(2024,4,20,21,45)),
+    Historique(4, 'objet1','Alice', DateTime(2024,4,12,0,46),DateTime(2025,4,12,0,46)),
+    Historique(4, 'objet1','Alice', DateTime(2024,4,12,0,46),DateTime(2025,4,12,0,46)),
+    Historique(75, 'objet3','Bob', DateTime(2024,4,20,21,45), DateTime(2024,4,20,21,45)),
     Historique(3, 'objet2','Charlie',DateTime(2024,4,1,12,0), DateTime(0,0,0)),
   ];
 
