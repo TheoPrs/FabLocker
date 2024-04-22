@@ -1,6 +1,5 @@
-import 'package:fablocker/HistoriquePage.dart';
 import 'package:flutter/material.dart';
-import 'ConnexionPage.dart';
+import 'HistoriquePage.dart'; // Assurez-vous que le chemin d'accès est correct
 
 class ToolInfo {
   String name;
@@ -11,188 +10,189 @@ class ToolInfo {
       {required this.name, required this.status, required this.description});
 }
 
-class PrincipalePage extends StatelessWidget {
-  PrincipalePage({Key? key}) : super(key: key);
+class PrincipalePage extends StatefulWidget {
+  @override
+  _PrincipalePageState createState() => _PrincipalePageState();
+}
 
-  // Exemple de liste des outils
+class _PrincipalePageState extends State<PrincipalePage> {
   final List<ToolInfo> tools = List.generate(
     16,
     (index) => ToolInfo(
       name: 'Outil $index',
-      status: 'Disponible $index',
-      description: 'Très bo outils',
+
     ),
   );
 
-  void _showCasierOptions(
-      BuildContext context, int index, GlobalKey key, bool isAdmin) async {
-    final RenderBox renderBox =
-        key.currentContext?.findRenderObject() as RenderBox;
-    final Offset offset = renderBox.localToGlobal(Offset.zero);
-    final RelativeRect position = RelativeRect.fromLTRB(
-      offset.dx,
-      offset.dy,
-      offset.dx,
-      offset.dy,
-    );
+  List<bool> isMenuOpen = List.generate(16, (index) => false);
 
-    List<PopupMenuEntry<String>> menuItems = [
-      const PopupMenuItem(
-        value: 'ouvrir',
-        child: Text('Ouvrir'),
-      ),
-      const PopupMenuItem(
-        value: 'informations',
-        child: Text('Informations'),
-      ),
-    ];
-
-    if (isAdmin) {
-      menuItems.add(
-        const PopupMenuItem(
-          value: 'historique',
-          child: Text('Historique'),
-        ),
-      );
-    }
-
-    final selection = await showMenu(
-      context: context,
-      position: position,
-      items: menuItems,
-    );
-
-    switch (selection) {
-      case 'ouvrir':
-        // Logique pour ouvrir le casier
-        print('Ouvrir casier $index');
-        break;
-      case 'informations':
-        _showToolInformationDialog(context, tools[index]);
-        break;
-      case 'historique':
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => HistoriquePage(data: index,)),
-        );
-        break;
-      default:
-    }
+  void toggleMenu(int index) {
+    setState(() {
+      isMenuOpen[index] = !isMenuOpen[index];
+    });
   }
 
-  void _showToolInformationDialog(BuildContext context, ToolInfo toolInfo) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Informations de l\'Outil'),
-          content: SingleChildScrollView(
-            child: ListBody(
-              children: <Widget>[
-                Text('Nom de l\'Outil : ${toolInfo.name}'),
-                Text('Statut : ${toolInfo.status}'),
-                Text('Description: ${toolInfo.description}'),
-                // Ajoutez d'autres informations ici si nécessaire
-              ],
-            ),
-          ),
+
+
+    return Scaffold(
+        appBar: AppBar(
+          title: const Text('Page d\'accueil'),
+          automaticallyImplyLeading: false,
           actions: <Widget>[
-            TextButton(
-              child: Text('Fermer'),
+            IconButton(
+              icon: const Icon(Icons.exit_to_app),
               onPressed: () {
-                Navigator.of(context).pop();
+                // Insérez ici la logique de déconnexion
+                // Par exemple, naviguez vers l'écran de connexion ou appelez une fonction de déconnexion
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: const Text('Déconnexion'),
+                      content:
+                          const Text('Voulez-vous vraiment vous déconnecter ?'),
+                      actions: <Widget>[
+                        TextButton(
+                          child: const Text('Non'),
+                          onPressed: () {
+                            Navigator.of(context)
+                                .pop(); // Ferme la boîte de dialogue
+                          },
+                        ),
+                        TextButton(
+                          child: const Text('Oui'),
+                          onPressed: () {
+                            // Exécutez ici la logique de déconnexion
+                            // Par exemple, effacez les données de l'utilisateur ou la session stockée
+                            Navigator.of(context)
+                                .pop(); // Ferme la boîte de dialogue
+                            // Redirigez vers l'écran de connexion ou la page souhaitée après la déconnexion
+                          },
+                        ),
+                      ],
+                    );
+                  },
+                );
               },
             ),
           ],
-        );
-      },
-    );
-  }
 
-  @override
-  Widget build(BuildContext context) {
-    const bool isAdmin = true; // Modifier selon la logique de votre application
-
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Page d\'accueil'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.exit_to_app),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const MyHomePage()),
+        ),
+        body: Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            border: Border.all(color: Colors.blue, width: 2),
+            image: const DecorationImage(
+              image: AssetImage('assets/background.png'),
+              fit: BoxFit.cover,
+            ),
+          ),
+          child: GridView.builder(
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 4,
+              crossAxisSpacing: 10.0,
+              mainAxisSpacing: 10.0,
+              childAspectRatio: 1,
+            ),
+            itemCount: 16,
+            itemBuilder: (context, index) {
+              return GridTile(
+                child: Stack(
+                  alignment: Alignment.bottomCenter,
+                  children: [
+                    InkWell(
+                      onTap: () => toggleMenu(index),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Colors.blue),
+                          // Ajoutez un léger fond sombre pour assurer la lisibilité du texte blanc
+                          color: Colors.black.withOpacity(0.5),
+                        ),
+                        child: Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                'Casier : $index',
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                ),
+                              ),
+                              Text(
+                                'Outil : ${tools[index].name}',
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                ),
+                              ),
+                              Text(
+                                'Disponibilité : ${tools[index].status}',
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                ),
+                              ),
+                              Text(
+                                'État : ${tools[index].description}',
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                    AnimatedPositioned(
+                      duration: const Duration(milliseconds: 300),
+                      bottom: isMenuOpen[index] ? 0 : -availableHeight,
+                      left: 0,
+                      right: 0,
+                      child: Material(
+                        elevation: 2.0,
+                        color: Colors.blue,
+                        child: SingleChildScrollView(
+                          child: ConstrainedBox(
+                            constraints:
+                                BoxConstraints(maxHeight: availableHeight),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                ListTile(
+                                  title: const Text('Ouvrir',
+                                      style: TextStyle(color: Colors.white)),
+                                  onTap: () {
+                                    // Logique pour ouvrir le casier
+                                  },
+                                ),
+                                ListTile(
+                                  title: const Text('Informations',
+                                      style: TextStyle(color: Colors.white)),
+                                  onTap: () {
+                                    // Logique pour afficher les informations
+                                  },
+                                ),
+                                ListTile(
+                                  title: const Text('Historique',
+                                      style: TextStyle(color: Colors.white)),
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              HistoriquePage()),
+                                    );
+                                  },
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               );
             },
           ),
-        ],
-      ),
-      body: Container(
-        decoration: BoxDecoration(
-          color: Colors.white,
-          border: Border.all(color: Colors.blue, width: 2),
-          image: const DecorationImage(
-            image: AssetImage('assets/background.png'),
-            fit: BoxFit.cover,
-          ),
-        ),
-        child: GridView.builder(
-          padding: const EdgeInsets.all(10.0),
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 4,
-            crossAxisSpacing: 10.0,
-            mainAxisSpacing: 10.0,
-            childAspectRatio: 1,
-          ),
-          itemCount: tools.length, //16
-          itemBuilder: (context, index) {
-            // Créer une GlobalKey pour chaque élément de la grille.
-            final GlobalKey itemKey = GlobalKey();
-
-            return InkWell(
-              key: itemKey,
-              onTap: () => _showCasierOptions(context, index, itemKey, isAdmin),
-              child: Container(
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.white, width: 2),
-                ),
-                child: Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        'Casier : $index',
-                        style: const TextStyle(
-                          color: Colors.white,
-                        ),
-                      ),
-                      const Text(
-                        'Outil :',
-                        style: TextStyle(
-                          color: Colors.white,
-                        ),
-                      ),
-                      const Text(
-                        'Disponibilité :',
-                        style: TextStyle(
-                          color: Colors.white,
-                        ),
-                      ),
-                      const Text(
-                        'État :',
-                        style: TextStyle(
-                          color: Colors.white,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            );
-          },
-        ),
-      ),
-    );
+        ));
   }
 }
