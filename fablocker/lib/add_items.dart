@@ -1,7 +1,10 @@
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import './widgets/displayFloat.dart';
 import 'package:flutter/services.dart';
 import './widgets/singleChoice.dart';
+import 'Style/style.dart';
 
 class addItems extends StatefulWidget{
   const addItems({Key? key});
@@ -15,7 +18,7 @@ class _addItems extends State<addItems> {
   TextEditingController object_name = TextEditingController();
   TextEditingController object_description = TextEditingController();
   TextEditingController object_loan_duration = TextEditingController();
-  double myValue = 450.15;
+  double myValue = 999.15;
   var typeDeCasier = ['Petit casier', 'Casier moyen', 'Grand casier'];
   
 
@@ -25,12 +28,11 @@ class _addItems extends State<addItems> {
       key: _scaffoldKey,
       appBar: AppBar(
         title: const Text('FabLocker'),
-        backgroundColor: Colors.grey,
       ),
       body: Container(
         decoration: const BoxDecoration(
           image: DecorationImage(
-            image: AssetImage('assets/background.png'), // Ajuster le chemin de l'image
+            image: AssetImage('assets/background.png'),
             fit: BoxFit.cover,
           ),
         ),
@@ -43,13 +45,15 @@ class _addItems extends State<addItems> {
                 alignment: Alignment(0, -0.85),
                 child: Text(
                   'Spécification de l\'objet que vous souhaitez ajouter : ',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 24.0,
-                  ),
+                  style: titleStyle,
                 ),
               ),
-              const SizedBox(height: 20.0),
+
+
+              const SizedBox(height: 40.0),
+
+
+              //Nom de l'objet
               SizedBox(
                 height: 50,
                 width: 440,
@@ -57,15 +61,18 @@ class _addItems extends State<addItems> {
                   controller: object_name,
                   decoration: const InputDecoration(
                     labelText: 'Nom de l\'objet',
-                    labelStyle: TextStyle(color: Color.fromARGB(255, 255, 255, 255)),
+                    labelStyle: inputDecorationStyle,
                     border: OutlineInputBorder(),
                   ),
-                  style: const TextStyle(
-                    color: Colors.white,
-                  ),
+                  style: inputStyle,
                 ),
               ),
+
+
               const SizedBox(height:20.0),
+
+
+              //Decription de l'objet
               SizedBox(
                 height: 50,
                 width: 440,
@@ -73,15 +80,18 @@ class _addItems extends State<addItems> {
                   controller: object_description,
                   decoration: const InputDecoration(
                     labelText: 'Description de l\'objet',
-                    labelStyle: TextStyle(color: Color.fromARGB(255, 255, 255, 255)),
+                    labelStyle: inputDecorationStyle,
                     border: OutlineInputBorder(),
                   ),
-                  style: const TextStyle(
-                    color: Colors.white,
-                  ),
+                  style: inputStyle,
                 ),
               ),
+
+
               const SizedBox(height: 20.0),
+              
+              
+              //Durée de l'emprunt
               SizedBox(
                 height: 50,
                 width: 440,
@@ -91,31 +101,76 @@ class _addItems extends State<addItems> {
                   inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                   decoration: const InputDecoration(
                     labelText: 'Durée de l\'emprunt souhaitée en jours',
-                    labelStyle: TextStyle(color: Color.fromARGB(255, 255, 255, 255)),
+                    labelStyle: inputDecorationStyle,
                     border: OutlineInputBorder(),
                   ),
-                  style: const TextStyle(
-                    color: Colors.white,
-                  ),
+                  style: inputStyle,
                 ),
               ),
+              
+              
               const SizedBox(height:20.0),
+              
+              
               SizedBox(
                 height: 60,
                 child: FloatDisplayWidget(floatValue: myValue),
               ),
+              
+              
               const SizedBox(height:20.0),
+              
+              
+              //Choix multiple
               SizedBox(
-                width: 200,
+                width: 400,
                 height: 50*typeDeCasier.length.toDouble(),
                 child: SingleChoiceWidget(choices: typeDeCasier)),
+              
+              
               const SizedBox(height:20.0),
+              
+              
+              //Bouton "Créer l'objet"
               ElevatedButton(
-                onPressed: () {
-                  //int selectedValue = SingleChoiceWidget().getSelectedChoice();
-                  //String object = object_name.text;
-                  //String description = object_description.text;
-                  //int loan_duration = int.parse(object_loan_duration.text);
+                onPressed: () async {
+                  // if( object_name.text.isEmpty || object_description.text.isEmpty || object_loan_duration.text.isEmpty ){
+                  //   print("test");
+                  // }
+                  
+                  String object = object_name.text;
+                  String description = object_description.text;
+                  int loanDuration = int.parse(object_loan_duration.text);
+                  
+                  Item item = Item(
+                    name: object,
+                    description: description,
+                    loanDuration: loanDuration,
+                    weight: myValue,
+                  );
+
+
+                  Map<String, dynamic> itemData = item.toJson();
+
+                    try {
+                      final response = await http.post(
+                        Uri.parse('http://localhost:3000/api/items'),
+                        body: jsonEncode(itemData),
+                        headers: <String, String>{
+                          'Content-Type': 'application/json; charset=UTF-8',
+                        },
+                      );
+
+                      if (response.statusCode == 201) {
+                        print('Objet créé avec succès !');
+                      } else if (response.statusCode == 400){
+                        print('test');
+                      } else {
+                        print('Erreur lors de la création de l\'objet\': ${response.statusCode}');
+                      }
+                    } catch (e) {
+                      print('Erreur lors de la requête: $e');
+                    }
                   },
                 child: const Text('Créer l\'objet'),
               ),
@@ -124,5 +179,29 @@ class _addItems extends State<addItems> {
         ),
       ),
     );
+  }
+}
+
+
+class Item {
+  final String name;
+  final String description;
+  final int loanDuration;
+  final double weight;
+
+  Item({
+    required this.name,
+    required this.description,
+    required this.loanDuration,
+    required this.weight,
+  });
+
+  Map<String, dynamic> toJson() {
+    return {
+      'name': name,
+      'description': description,
+      'loanDuration' : loanDuration,
+      'weight': weight,
+    };
   }
 }

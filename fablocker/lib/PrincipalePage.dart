@@ -20,8 +20,7 @@ class _PrincipalePageState extends State<PrincipalePage> {
     16,
     (index) => ToolInfo(
       name: 'Outil $index',
-      status: 'Disponible',
-      description: 'Très bon outil',
+
     ),
   );
 
@@ -33,15 +32,7 @@ class _PrincipalePageState extends State<PrincipalePage> {
     });
   }
 
-  @override
-  Widget build(BuildContext context) {
-    // Obtenez la hauteur de l'écran avec MediaQuery
-    double screenHeight = MediaQuery.of(context).size.height;
 
-    // Calculez la hauteur disponible pour le menu déroulant
-    // En supposant que l'AppBar et la barre de statut prennent ensemble 120px
-    double availableHeight =
-        screenHeight - 120; // Ajustez cette valeur si nécessaire
 
     return Scaffold(
         appBar: AppBar(
@@ -85,6 +76,7 @@ class _PrincipalePageState extends State<PrincipalePage> {
               },
             ),
           ],
+
         ),
         body: Container(
           decoration: BoxDecoration(

@@ -1,10 +1,9 @@
 import 'package:fablocker/PrincipalePage.dart';
 import 'package:flutter/material.dart';
-import 'PrincipalePage.dart';
-
+import 'Style/style.dart';
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key});
+  const MyHomePage({Key? key}) : super(key: key);
 
   @override
   _MyHomePageState createState() => _MyHomePageState();
@@ -15,7 +14,7 @@ class _MyHomePageState extends State<MyHomePage> {
   TextEditingController usernameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   final RegExp usernameRegExp = RegExp(r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$');
-  final RegExp passwordRegExp = RegExp(r'^[a-zA-Z0-9]{8,}$'); // Exige au moins 8 caractères alphanumériques
+  final RegExp passwordRegExp = RegExp(r'^[a-zA-Z0-9]{8,}$'); 
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +26,7 @@ class _MyHomePageState extends State<MyHomePage> {
       body: Container(
         decoration: const BoxDecoration(
           image: DecorationImage(
-            image: AssetImage('assets/background.png'), // Ajuster le chemin de l'image
+            image: AssetImage('assets/background.png'), 
             fit: BoxFit.cover,
           ),
         ),
@@ -40,13 +39,10 @@ class _MyHomePageState extends State<MyHomePage> {
                 alignment: Alignment(0, -0.85),
                 child: Text(
                   'Bienvenue sur votre application FabLocker !',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 24.0,
-                  ),
+                  style: titleStyle
                 ),
               ),
-              const SizedBox(height: 20.0),
+              const SizedBox(height: 50.0),
               SizedBox(
                 height: 50,
                 width: 440,
@@ -54,12 +50,10 @@ class _MyHomePageState extends State<MyHomePage> {
                   controller: usernameController,
                   decoration: const InputDecoration(
                     labelText: 'Adresse e-mail',
-                    labelStyle: TextStyle(color: Color.fromARGB(255, 255, 255, 255)),
+                    labelStyle: inputDecorationStyle,
                     border: OutlineInputBorder(),
                   ),
-                  style: const TextStyle(
-                    color: Colors.white,
-                  ),
+                  style: inputStyle,
                 ),
               ),
               const SizedBox(height: 20.0),
@@ -71,50 +65,35 @@ class _MyHomePageState extends State<MyHomePage> {
                   obscureText: true,
                   decoration: const InputDecoration(
                     labelText: 'Mot de passe',
-                    labelStyle: TextStyle(color: Color.fromARGB(255, 255, 255, 255)),
+                    labelStyle: inputDecorationStyle,
                     border: OutlineInputBorder(),
                   ),
-                  style: const TextStyle(
-                    color: Colors.white,
-                  ),
+                  style: inputStyle,
                 ),
               ),
-              const SizedBox(height: 16.0),
+              const SizedBox(height: 50.0),
               ElevatedButton(
                 onPressed: () {
                   String username = usernameController.text;
                   String password = passwordController.text;
+                  const String testUsername = "test@junia.com";
+                  const String testPassword = "Password1";
                   
+                  //get accessToken (username,password)
                   if (username.isEmpty || password.isEmpty) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Veuillez bien entrer un nom d\'utilisateur ainsi qu\'un mot de passe !'),
-                      ),
-                    );
+                    _showSnackBar('Veuillez bien entrer un nom d\'utilisateur ainsi qu\'un mot de passe !');
                   } else if ((!usernameRegExp.hasMatch(username)) || (!passwordRegExp.hasMatch(password))) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('L\'adresse e-mail doit être ecrite au format isen@junia.com et le mot de passe au format valide.'),
-                      ),
-                    );
+                    _showSnackBar('L\'adresse e-mail doit être écrite au format isen@junia.com et le mot de passe doit être valide.');
                   } else {
-                    if (username == "theo@junia.student.com" && password == "17022001Tp") {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Bienvenue'),
-                        ),
-                      );
-                        Navigator.push(
+                    if (username == testUsername && password == testPassword) {
+                      _showSnackBar('Bienvenue $username');
+                      Navigator.push(
                         context,
                         MaterialPageRoute(builder: (context) => PrincipalePage()),
                       );
                     }
-                    else{
-                        ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Adresse e-mail ou mot de passe incorrect !'),
-                        ),
-                      );
+                    else {
+                      _showSnackBar('Adresse e-mail ou mot de passe incorrect !');
                     }
                   }
                 },
@@ -123,6 +102,14 @@ class _MyHomePageState extends State<MyHomePage> {
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  void _showSnackBar(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
       ),
     );
   }
