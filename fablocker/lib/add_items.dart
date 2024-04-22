@@ -5,6 +5,7 @@ import './widgets/displayFloat.dart';
 import 'package:flutter/services.dart';
 import './widgets/singleChoice.dart';
 import 'Style/style.dart';
+import 'PrincipalePage.dart';
 
 class addItems extends StatefulWidget{
   const addItems({Key? key});
@@ -140,13 +141,15 @@ class _addItems extends State<addItems> {
                   
                   String object = object_name.text;
                   String description = object_description.text;
-                  int loanDuration = int.parse(object_loan_duration.text);
+                  int borrow_duration = int.parse(object_loan_duration.text);
                   
                   Item item = Item(
+                    id_locker: 4521 ,
                     name: object,
                     description: description,
-                    loanDuration: loanDuration,
+                    availability: true,
                     weight: myValue,
+                    borrow_duration: borrow_duration,
                   );
 
 
@@ -154,7 +157,7 @@ class _addItems extends State<addItems> {
 
                     try {
                       final response = await http.post(
-                        Uri.parse('http://localhost:3000/api/items'),
+                        Uri.parse('http://localhost:3000/api/items/create'),
                         body: jsonEncode(itemData),
                         headers: <String, String>{
                           'Content-Type': 'application/json; charset=UTF-8',
@@ -163,6 +166,10 @@ class _addItems extends State<addItems> {
 
                       if (response.statusCode == 201) {
                         print('Objet créé avec succès !');
+                        Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => PrincipalePage()),
+                        );
                       } else if (response.statusCode == 400){
                         print('test');
                       } else {
@@ -184,24 +191,30 @@ class _addItems extends State<addItems> {
 
 
 class Item {
+  final int id_locker;
   final String name;
   final String description;
-  final int loanDuration;
+  final bool availability;
   final double weight;
+  final int borrow_duration;
 
   Item({
+    required this.id_locker,
     required this.name,
     required this.description,
-    required this.loanDuration,
+    required this.availability,
     required this.weight,
+    required this.borrow_duration,
   });
 
   Map<String, dynamic> toJson() {
     return {
+      'id_locker': id_locker,
       'name': name,
       'description': description,
-      'loanDuration' : loanDuration,
+      'availability': availability,
       'weight': weight,
+      'borrow_duration' : borrow_duration,
     };
   }
 }

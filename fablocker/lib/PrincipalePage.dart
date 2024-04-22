@@ -1,28 +1,137 @@
-import 'package:fablocker/HistoriquePage.dart';
 import 'package:flutter/material.dart';
-import 'ConnexionPage.dart';
+import 'package:http/http.dart' as http;
 
 class ToolInfo {
   String name;
   String status;
   String description;
 
-  ToolInfo(
-      {required this.name, required this.status, required this.description});
+  ToolInfo({
+    required this.name,
+    required this.status,
+    required this.description,
+  });
 }
 
-class PrincipalePage extends StatelessWidget {
+List<ToolInfo> tools = [];
+
+List<ToolInfo> parseData(String jsonData) {
+  // Implémentez la logique de parsing ici
+  return [];
+}
+
+Future<void> fetchData() async {
+  final response = await http.get(Uri.parse('http://localhost:3000/api/items'));
+  if (response.statusCode == 200) {
+    final jsonData = response.body;
+    print(jsonData); // Afficher les données récupérées
+    tools = parseData(jsonData);
+  
+    // Vous pouvez traiter les données ici selon vos besoins
+  } else {
+    // Gérer les erreurs de requête
+    print('Erreur de requête: ${response.statusCode}');
+  }
+}
+
+class PrincipalePage extends StatefulWidget {
   PrincipalePage({Key? key}) : super(key: key);
 
-  // Exemple de liste des outils
-  final List<ToolInfo> tools = List.generate(
-    16,
-    (index) => ToolInfo(
-      name: 'Outil $index',
-      status: 'Disponible $index',
-      description: 'Très bo outils',
-    ),
-  );
+  @override
+  _PrincipalePageState createState() => _PrincipalePageState();
+}
+
+class _PrincipalePageState extends State<PrincipalePage> {
+  @override
+  void initState() {
+    super.initState();
+    // Appeler fetchData lorsque la page est construite
+    fetchData();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    const bool isAdmin = true; // Modifier selon la logique de votre application
+
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Page d\'accueil'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.exit_to_app),
+            onPressed: () {
+              Navigator.pop(context); // Retour à l'écran précédent
+            },
+          ),
+        ],
+      ),
+      body: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          border: Border.all(color: Colors.blue, width: 2),
+          image: const DecorationImage(
+            image: AssetImage('assets/background.png'),
+            fit: BoxFit.cover,
+          ),
+        ),
+        child: GridView.builder(
+          padding: const EdgeInsets.all(10.0),
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 4,
+            crossAxisSpacing: 10.0,
+            mainAxisSpacing: 10.0,
+            childAspectRatio: 1,
+          ),
+          itemCount: tools.length, // Utilise la longueur de la liste tools
+          itemBuilder: (context, index) {
+            // Créer une GlobalKey pour chaque élément de la grille.
+            final GlobalKey itemKey = GlobalKey();
+
+            return InkWell(
+              key: itemKey,
+              onTap: () => _showCasierOptions(context, index, itemKey, isAdmin),
+              child: Container(
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.white, width: 2),
+                ),
+                child: Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        'Casier : ${tools[index].name}',
+                        style: const TextStyle(
+                          color: Colors.white,
+                        ),
+                      ),
+                      Text(
+                        'Outil : ${tools[index].status}',
+                        style: const TextStyle(
+                          color: Colors.white,
+                        ),
+                      ),
+                      Text(
+                        'Disponibilité : ${tools[index].description}',
+                        style: const TextStyle(
+                          color: Colors.white,
+                        ),
+                      ),
+                      const Text(
+                        'État :',
+                        style: TextStyle(
+                          color: Colors.white,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            );
+          },
+        ),
+      ),
+    );
+  }
 
   void _showCasierOptions(
       BuildContext context, int index, GlobalKey key, bool isAdmin) async {
@@ -71,10 +180,8 @@ class PrincipalePage extends StatelessWidget {
         _showToolInformationDialog(context, tools[index]);
         break;
       case 'historique':
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => HistoriquePage(data: index,)),
-        );
+        // À remplacer par votre navigation vers la page Historique
+        print('Navigation vers la page Historique');
         break;
       default:
     }
@@ -106,93 +213,6 @@ class PrincipalePage extends StatelessWidget {
           ],
         );
       },
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    const bool isAdmin = true; // Modifier selon la logique de votre application
-
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Page d\'accueil'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.exit_to_app),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const MyHomePage()),
-              );
-            },
-          ),
-        ],
-      ),
-      body: Container(
-        decoration: BoxDecoration(
-          color: Colors.white,
-          border: Border.all(color: Colors.blue, width: 2),
-          image: const DecorationImage(
-            image: AssetImage('assets/background.png'),
-            fit: BoxFit.cover,
-          ),
-        ),
-        child: GridView.builder(
-          padding: const EdgeInsets.all(10.0),
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 4,
-            crossAxisSpacing: 10.0,
-            mainAxisSpacing: 10.0,
-            childAspectRatio: 1,
-          ),
-          itemCount: tools.length, //16
-          itemBuilder: (context, index) {
-            // Créer une GlobalKey pour chaque élément de la grille.
-            final GlobalKey itemKey = GlobalKey();
-
-            return InkWell(
-              key: itemKey,
-              onTap: () => _showCasierOptions(context, index, itemKey, isAdmin),
-              child: Container(
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.white, width: 2),
-                ),
-                child: Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        'Casier : $index',
-                        style: const TextStyle(
-                          color: Colors.white,
-                        ),
-                      ),
-                      const Text(
-                        'Outil :',
-                        style: TextStyle(
-                          color: Colors.white,
-                        ),
-                      ),
-                      const Text(
-                        'Disponibilité :',
-                        style: TextStyle(
-                          color: Colors.white,
-                        ),
-                      ),
-                      const Text(
-                        'État :',
-                        style: TextStyle(
-                          color: Colors.white,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            );
-          },
-        ),
-      ),
     );
   }
 }
