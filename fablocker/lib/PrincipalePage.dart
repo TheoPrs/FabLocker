@@ -9,7 +9,7 @@ class ToolInfo {
   bool availability;
   int weight;
   String name;
-  String status;
+  int borrow_duration;
   String description;
 
   ToolInfo({
@@ -17,7 +17,7 @@ class ToolInfo {
     required this.availability,
     required this.weight,
     required this.name,
-    required this.status,
+    required this.borrow_duration,
     required this.description,
   });
 }
@@ -33,7 +33,7 @@ List<ToolInfo> parseData(String jsonData) {
       availability: item['availability'],
       weight: item['weight'],
       name: item['name'],
-      status: item['availability'] ? 'Disponible' : 'Indisponible',
+      borrow_duration: item['borrow_duration'],
       description: item['description'],
     ));
   }
@@ -45,6 +45,8 @@ Future<void> fetchData() async {
   if (response.statusCode == 200) {
     final jsonData = response.body;
     tools = parseData(jsonData);
+    tools.sort((a, b) => a.id_locker.compareTo(b.id_locker));
+    //print(tools); debbuging
   } else {
     print('Erreur de requête: ${response.statusCode}');
   }
@@ -101,7 +103,7 @@ class _PrincipalePageState extends State<PrincipalePage> {
           itemBuilder: (context, index) {
             final GlobalKey itemKey = GlobalKey();
             bool? stateAvailability = tools[index].availability;
-            final String textAvailability = stateAvailability == true ? 'Ouvert' : 'Fermé';
+            final String textAvailability = stateAvailability == true ? 'Disponible' : 'Indisponible';
 
             return InkWell(
               key: itemKey,
@@ -127,14 +129,8 @@ class _PrincipalePageState extends State<PrincipalePage> {
                         ),
                       ),
                       Text(
-                        'Disponibilité : $textAvailability',
+                        'État : $textAvailability',
                         style: const TextStyle(
-                          color: Colors.white,
-                        ),
-                      ),
-                      Text(
-                        'État : ${tools[index].status}',
-                        style: TextStyle(
                           color: Colors.white,
                         ),
                       ),
@@ -218,8 +214,9 @@ class _PrincipalePageState extends State<PrincipalePage> {
             child: ListBody(
               children: <Widget>[
                 Text('Nom de l\'Outil : ${toolInfo.name}'),
-                Text('Statut : ${toolInfo.status}'),
+                Text('Statut : ${toolInfo.availability ? 'Disponible' : 'Indisponible'}'),
                 Text('Description: ${toolInfo.description}'),
+                Text('Durée d\'emprunt maximale : ${toolInfo.borrow_duration} jours'),
                 // Ajoutez d'autres informations ici si nécessaire
               ],
             ),
