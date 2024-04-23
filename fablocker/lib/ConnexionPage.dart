@@ -1,6 +1,10 @@
+import 'dart:convert';
+import 'dart:io';
 import 'package:fablocker/PrincipalePage.dart';
 import 'package:flutter/material.dart';
 import 'Style/style.dart';
+import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({Key? key}) : super(key: key);
@@ -76,26 +80,37 @@ class _MyHomePageState extends State<MyHomePage> {
                 onPressed: () {
                   String username = usernameController.text;
                   String password = passwordController.text;
-                  const String testUsername = "test@junia.com";
-                  const String testPassword = "Password1";
-                  
-                  //get accessToken (username,password)
-                  if (username.isEmpty || password.isEmpty) {
-                    _showSnackBar('Veuillez bien entrer un nom d\'utilisateur ainsi qu\'un mot de passe !');
-                  } else if ((!usernameRegExp.hasMatch(username)) || (!passwordRegExp.hasMatch(password))) {
-                    _showSnackBar('L\'adresse e-mail doit être écrite au format isen@junia.com et le mot de passe doit être valide.');
-                  } else {
-                    if (username == testUsername && password == testPassword) {
-                      _showSnackBar('Bienvenue $username');
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => PrincipalePage()),
+                  void _login(String username, String password) async {
+                    try {
+                      final response = await http.post(
+                        Uri.parse('http://localhost:3000/auth/login'),
+                        body: {
+                          'email': username,
+                          'password': password,
+                        },
                       );
-                    }
-                    else {
-                      _showSnackBar('Adresse e-mail ou mot de passe incorrect !');
+
+                      if (response.statusCode == 200) {
+                        final responseData = json.decode(response.body);
+                        final token = responseData['access_token'];
+                        SharedPreferences prefs = await SharedPreferences.getInstance();
+                        prefs.setString('token', token);
+                        String? userToken = prefs.getString('token');
+                        print(userToken);
+                        _showSnackBar('Bienvenue $username');
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => PrincipalePage()),
+                          );
+                      } else {
+                         _showSnackBar('Adresse e-mail ou mot de passe incorrect !');
+                      }
+                    } catch (e) {
+                      _showSnackBar('Erreur de connexion');
                     }
                   }
+                  _login(username, password);
+                  
                 },
                 child: const Text('Se connecter'),
               ),

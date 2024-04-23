@@ -3,9 +3,9 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import './widgets/displayFloat.dart';
 import 'package:flutter/services.dart';
-import './widgets/singleChoice.dart';
 import 'Style/style.dart';
 import 'PrincipalePage.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class addItems extends StatefulWidget{
   const addItems({Key? key});
@@ -20,7 +20,6 @@ class _addItems extends State<addItems> {
   TextEditingController object_description = TextEditingController();
   TextEditingController object_loan_duration = TextEditingController();
   double myValue = 999.15;
-  var typeDeCasier = ['Petit casier', 'Casier moyen', 'Grand casier'];
   
 
   @override
@@ -122,15 +121,6 @@ class _addItems extends State<addItems> {
               const SizedBox(height:20.0),
               
               
-              //Choix multiple
-              SizedBox(
-                width: 400,
-                height: 50*typeDeCasier.length.toDouble(),
-                child: SingleChoiceWidget(choices: typeDeCasier)),
-              
-              
-              const SizedBox(height:20.0),
-              
               
               //Bouton "Créer l'objet"
               ElevatedButton(
@@ -144,7 +134,7 @@ class _addItems extends State<addItems> {
                   int borrow_duration = int.parse(object_loan_duration.text);
                   
                   Item item = Item(
-                    id_locker: 4521 ,
+                    id_locker: 46,
                     name: object,
                     description: description,
                     availability: true,
@@ -152,8 +142,9 @@ class _addItems extends State<addItems> {
                     borrow_duration: borrow_duration,
                   );
 
-
                   Map<String, dynamic> itemData = item.toJson();
+                  SharedPreferences prefs = await SharedPreferences.getInstance();
+                  String? userToken = prefs.getString('token');
 
                     try {
                       final response = await http.post(
@@ -161,6 +152,7 @@ class _addItems extends State<addItems> {
                         body: jsonEncode(itemData),
                         headers: <String, String>{
                           'Content-Type': 'application/json; charset=UTF-8',
+                          'Authorization' : 'Bearer $userToken',
                         },
                       );
 

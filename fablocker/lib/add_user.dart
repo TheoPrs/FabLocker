@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'dart:convert';
 import 'Style/style.dart';
-import 'dart:math';
 import 'PrincipalePage.dart';
 
 class addUsers extends StatefulWidget {
@@ -133,14 +131,14 @@ class _addUsersState extends State<addUsers> {
                     );
 
 
-                    Random random = Random();
-                    int number = random.nextInt(999999); 
+                    int rfid = 4515; 
                     User newUser = User(
-                      rfid: number,
-                      admin: false,
-                      mail: username,
+                      rfid: rfid,
+                      role: "user",
+                      email: username,
                       password: password,
                     );
+                    print(newUser.rfid);
 
 
                     Navigator.push(
@@ -152,14 +150,17 @@ class _addUsersState extends State<addUsers> {
 
                     try {
                       final response = await http.post(
-                        Uri.parse('http://localhost:3000/api/users'),
-                        body: jsonEncode(userData),
-                        headers: <String, String>{
-                          'Content-Type': 'application/json; charset=UTF-8',
+                        Uri.parse('http://localhost:3000/auth/register'),
+                        body: {
+                          'rfid': rfid.toString(),
+                          'role': 'user',
+                          'email': username,
+                          'password': password,
                         },
                       );
+                      print(response.statusCode);
 
-                      if (response.statusCode == 201) {
+                      if (response.statusCode == 200) {
                         print('Profil créé avec succès !');
                       } else if (response.statusCode == 400){
                         print('Le RFID est déjà attribué');
@@ -183,22 +184,22 @@ class _addUsersState extends State<addUsers> {
 
 class User {
   final int rfid;
-  final bool admin;
-  final String mail;
+  final String role;
+  final String email;
   final String password;
 
   User({
     required this.rfid,
-    required this.admin,
-    required this.mail,
+    required this.role,
+    required this.email,
     required this.password,
   });
 
   Map<String, dynamic> toJson() {
     return {
       'rfid': rfid,
-      'admin': admin,
-      'mail': mail,
+      'admin': role,
+      'eemail': email,
       'password': password,
     };
   }

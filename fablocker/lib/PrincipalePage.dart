@@ -1,8 +1,7 @@
-import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:flutter/material.dart';
 import 'HistoriquePage.dart';
-
+import 'package:http/http.dart' as http;
 
 class ToolInfo {
   int id_locker;
@@ -40,18 +39,6 @@ List<ToolInfo> parseData(String jsonData) {
   return parsedData;
 }
 
-Future<void> fetchData() async {
-  final response = await http.get(Uri.parse('http://localhost:3000/api/items'));
-  if (response.statusCode == 200) {
-    final jsonData = response.body;
-    tools = parseData(jsonData);
-    tools.sort((a, b) => a.id_locker.compareTo(b.id_locker));
-    //print(tools); debbuging
-  } else {
-    print('Erreur de requête: ${response.statusCode}');
-  }
-}
-
 class PrincipalePage extends StatefulWidget {
   PrincipalePage({Key? key}) : super(key: key);
 
@@ -60,15 +47,33 @@ class PrincipalePage extends StatefulWidget {
 }
 
 class _PrincipalePageState extends State<PrincipalePage> {
+  bool isLoading = true;
+
   @override
   void initState() {
     super.initState();
     fetchData();
   }
+  Map<String, String> headers = {
+    'Content-Type': 'application/json; charset=UTF-8',
+    'Authorization' : 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRlc3RAanVuaWEuY29tIiwicmZpZCI6IjEyMzU0NTY4NTQyIiwicm9sZSI6InVzZXIiLCJpYXQiOjE3MTM4ODI5NTYsImV4cCI6MTcxMzk2OTM1Nn0.10kLGtzi72BFiAi84Hd0ALna-t-EisFPjRMmzMwY5Us',};
+  Future<void> fetchData() async {
+    final response = await http.get(Uri.parse('http://localhost:3000/api/items'),headers: headers);
+    if (response.statusCode == 200) {
+      final jsonData = response.body;
+      setState(() {
+        tools = parseData(jsonData);
+        tools.sort((a, b) => a.id_locker.compareTo(b.id_locker));
+        isLoading = false;
+      });
+    } else {
+      print('Erreur de requête: ${response.statusCode}');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    const bool isAdmin = true; 
+    const bool isAdmin = true;
 
     return Scaffold(
       appBar: AppBar(
@@ -77,71 +82,85 @@ class _PrincipalePageState extends State<PrincipalePage> {
           IconButton(
             icon: const Icon(Icons.exit_to_app),
             onPressed: () {
-              Navigator.pop(context); 
+              Navigator.pop(context);
             },
           ),
         ],
       ),
-      body: Container(
-        decoration: BoxDecoration(
-          color: Colors.white,
-          border: Border.all(color: Colors.blue, width: 2),
-          image: const DecorationImage(
-            image: AssetImage('assets/background.png'),
-            fit: BoxFit.cover,
-          ),
-        ),
-        child: GridView.builder(
-          padding: const EdgeInsets.all(10.0),
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 4,
-            crossAxisSpacing: 10.0,
-            mainAxisSpacing: 10.0,
-            childAspectRatio: 1,
-          ),
-          itemCount: tools.length, 
-          itemBuilder: (context, index) {
-            final GlobalKey itemKey = GlobalKey();
-            bool? stateAvailability = tools[index].availability;
-            final String textAvailability = stateAvailability == true ? 'Disponible' : 'Indisponible';
-
-            return InkWell(
-              key: itemKey,
-              onTap: () => _showCasierOptions(context, index, itemKey, isAdmin),
-              child: Container(
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.white, width: 2),
-                ),
-                child: Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        'Casier : ${tools[index].id_locker}',
-                        style: const TextStyle(
-                          color: Colors.white,
-                        ),
-                      ),
-                      Text(
-                        'Outil : ${tools[index].name}',
-                        style: const TextStyle(
-                          color: Colors.white,
-                        ),
-                      ),
-                      Text(
-                        'État : $textAvailability',
-                        style: const TextStyle(
-                          color: Colors.white,
-                        ),
-                      ),
-                    ],
-                  ),
+      body: isLoading
+          ? Container(        
+              decoration: BoxDecoration(
+                color: Colors.white,
+                border: Border.all(color: Colors.blue, width: 2),
+                image: const DecorationImage(
+                  image: AssetImage('assets/background.png'),
+                  fit: BoxFit.cover,
                 ),
               ),
-            );
-          },
-        ),
-      ),
+            child: const Center(
+            child: CircularProgressIndicator(), // Garder le CircularProgress ici
+            ),)
+          : Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                border: Border.all(color: Colors.blue, width: 2),
+                image: const DecorationImage(
+                  image: AssetImage('assets/background.png'),
+                  fit: BoxFit.cover,
+                ),
+              ),
+              child: GridView.builder(
+                padding: const EdgeInsets.all(10.0),
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 4,
+                  crossAxisSpacing: 10.0,
+                  mainAxisSpacing: 10.0,
+                  childAspectRatio: 1,
+                ),
+                itemCount: tools.length,
+                itemBuilder: (context, index) {
+                  final GlobalKey itemKey = GlobalKey();
+                  bool? stateAvailability = tools[index].availability;
+                  final String textAvailability = stateAvailability == true ? 'Disponible' : 'Indisponible';
+
+                  return InkWell(
+                    key: itemKey,
+                    onTap: () => _showCasierOptions(context, index, itemKey, isAdmin),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.white, width: 2),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              'Casier : ${tools[index].id_locker}',
+                              style: const TextStyle(
+                                color: Colors.white,
+                              ),
+                            ),
+                            Text(
+                              'Outil : ${tools[index].name}',
+                              style: const TextStyle(
+                                color: Colors.white,
+                              ),
+                            ),
+                            Text(
+                              'État : $textAvailability',
+                              style: const TextStyle(
+                                color: Colors.white,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
     );
   }
 
@@ -214,16 +233,14 @@ class _PrincipalePageState extends State<PrincipalePage> {
             child: ListBody(
               children: <Widget>[
                 Text('Nom de l\'Outil : ${toolInfo.name}'),
-                Text('Statut : ${toolInfo.availability ? 'Disponible' : 'Indisponible'}'),
                 Text('Description: ${toolInfo.description}'),
                 Text('Durée d\'emprunt maximale : ${toolInfo.borrow_duration} jours'),
-                // Ajoutez d'autres informations ici si nécessaire
               ],
             ),
           ),
           actions: <Widget>[
             TextButton(
-              child: Text('Fermer'),
+              child: const Text('Fermer'),
               onPressed: () {
                 Navigator.of(context).pop();
               },
