@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'HistoriquePage.dart';
 
+
 class ToolInfo {
   int id_locker;
   bool availability;
@@ -189,7 +190,9 @@ class _PrincipalePageState extends State<PrincipalePage> {
     switch (selection) {
       case 'ouvrir':
         // Logique pour ouvrir le casier
-        print('Ouvrir casier $index');
+        // Mettre à jour la disponibilité de l'outil
+        print('Ouvrir casier');
+        //
         break;
       case 'informations':
         _showToolInformationDialog(context, tools[index]);
