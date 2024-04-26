@@ -104,7 +104,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         _showSnackBar('Bienvenue $username');
                           Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => removeUsers()),
+                            MaterialPageRoute(builder: (context) => PrincipalePage()),
                           );
                       } else {
                          _showSnackBar('Adresse e-mail ou mot de passe incorrect !');
