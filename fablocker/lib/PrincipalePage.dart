@@ -9,11 +9,11 @@ import 'package:shared_preferences/shared_preferences.dart';
 List<ToolInfo> tools = [];
 
 List<ToolInfo> parseData(String jsonData) {
-  List<ToolInfo> parsedData = [];
   final List<dynamic> data = json.decode(jsonData);
+  List<ToolInfo> parsedData = [];
   for (var item in data) {
     parsedData.add(ToolInfo(
-      locker: item['locker'],
+      locker: Locker.fromJson(item['locker']), // Créer une instance de Locker à partir de l'objet locker
       availability: item['availability'],
       weight: item['weight'],
       name: item['name'],
@@ -23,6 +23,7 @@ List<ToolInfo> parseData(String jsonData) {
   }
   return parsedData;
 }
+
 
 class PrincipalePage extends StatefulWidget {
   PrincipalePage({Key? key}) : super(key: key);
