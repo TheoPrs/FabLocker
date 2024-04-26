@@ -1,13 +1,10 @@
 import 'dart:convert';
-import 'package:fablocker/remove_user.dart';
+import 'package:fablocker/add_items.dart';
 import 'package:flutter/material.dart';
 import 'package:jwt_decode/jwt_decode.dart';
-import 'HistoriquePage.dart';
 import 'package:http/http.dart' as http;
 import 'class/locker.dart';
-import 'class/toolInfos.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'PrincipalePage.dart';
 import 'connexionPage.dart';
 
 List<Locker> locks = [];
@@ -16,7 +13,7 @@ List<Locker> parseData(String jsonData) {
   final List<dynamic> data = json.decode(jsonData);
   List<Locker> parsedData = [];
   for (var item in data) {
-    if (item['id'] > 4){
+    if (item['item'] == null ){
       parsedData.add(Locker(
         id : item["id"]
       ));
@@ -46,8 +43,6 @@ class _addItemsPageState extends State<addItemsPage> {
   Future<void> fetchData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? userToken = prefs.getString('token');
-    print(userToken);
-
     if (userToken != null) {
       Map<String, dynamic> payload = Jwt.parseJwt(userToken);
       if (payload['role'] == 'admin') {
@@ -81,18 +76,9 @@ class _addItemsPageState extends State<addItemsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Page d\'accueil'),
+        title: const Text('Ici vous retrouverez tous les casiers vides !'),
         actions:[
     if (isAdmin) ...[
-      IconButton(
-        icon: const Icon(Icons.delete_forever_outlined),
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const removeUsers()),
-          );
-        },
-      ),
       SizedBox(width: 250.0),
       IconButton(
   icon: const Icon(Icons.add),
@@ -122,7 +108,7 @@ class _addItemsPageState extends State<addItemsPage> {
                         print('Objet créé avec succès !');
                         Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => PrincipalePage()),
+                        MaterialPageRoute(builder: (context) => addItemsPage()),
                         );
                       } else{
                         print("Erreur");
@@ -248,14 +234,13 @@ class _addItemsPageState extends State<addItemsPage> {
       items: menuItems,
     );
 
-    switch (selection) {
-      case 'ouvrir':
-        // Logique pour ouvrir le casier
-        // Mettre à jour la disponibilité de l'outil
-        print('Ouvrir casier');
-        //
+    switch(selection){
+      case 'Choisir ce casier':
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => AddItems(idLocker : locks[index].id)),
+        );
         break;
-        default:
     }
   }
 }

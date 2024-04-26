@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'package:fablocker/ConnexionPage.dart';
-import 'package:fablocker/add_user.dart';
 import 'package:fablocker/remove_user.dart';
 import 'package:flutter/material.dart';
 import 'package:jwt_decode/jwt_decode.dart';
@@ -9,7 +8,6 @@ import 'package:http/http.dart' as http;
 import 'class/locker.dart';
 import 'class/toolInfos.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'add_items.dart';
 import 'addItemsPage.dart';
 
 List<ToolInfo> tools = [];
@@ -85,6 +83,7 @@ class _PrincipalePageState extends State<PrincipalePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: const Text('Page d\'accueil'),
         actions:[
     if (isAdmin) ...[
@@ -126,7 +125,7 @@ class _PrincipalePageState extends State<PrincipalePage> {
                         print('Objet créé avec succès !');
                         Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => PrincipalePage()),
+                        MaterialPageRoute(builder: (context) => addItemsPage()),
                         );
                       } else{
                         print("Erreur");

@@ -1,8 +1,6 @@
 // ignore_for_file: file_names
 import 'dart:convert';
-import 'package:fablocker/PrincipalePage.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'Style/style.dart';
 import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
@@ -59,15 +57,6 @@ class HistoriquePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (context) => PrincipalePage()),
-            );
-          },
-        ),
         title: const Text('Historique'),
       ),     
       body: Container(

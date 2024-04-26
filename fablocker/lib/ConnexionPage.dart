@@ -2,10 +2,6 @@
 
 import 'dart:convert';
 import 'package:fablocker/PrincipalePage.dart';
-import 'package:fablocker/addItemsPage.dart';
-import 'package:fablocker/add_items.dart';
-import 'package:fablocker/add_user.dart';
-import 'package:fablocker/remove_user.dart';
 import 'package:flutter/material.dart';
 import 'Style/style.dart';
 import 'package:http/http.dart' as http;
@@ -30,6 +26,7 @@ class _connexionPageState extends State<connexionPage> {
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: const Text('FabLocker'),
       ),
       body: Container(

@@ -1,20 +1,21 @@
+import 'items.dart';
 class Locker {
   late int id;
-  late int? itemId;
+  late Item? item;
 
-  Locker({required this.id, this.itemId});
+  Locker({required this.id, this.item});
 
   Map<String, dynamic> toJson() {
     return {
       'id': id,
-      'itemId': itemId
+      'item': item
     };
   }
 
   factory Locker.fromJson(Map<String, dynamic> json) {
     return Locker(
       id: json['id'],
-      itemId : json['itemId']
+      item : json['itemId']
     );
   }
 }
