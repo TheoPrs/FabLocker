@@ -1,6 +1,10 @@
+// ignore_for_file: prefer_const_constructors, no_leading_underscores_for_local_identifiers, use_build_context_synchronously, avoid_print, library_private_types_in_public_api, use_super_parameters
+
 import 'dart:convert';
-import 'dart:io';
 import 'package:fablocker/PrincipalePage.dart';
+import 'package:fablocker/add_items.dart';
+import 'package:fablocker/add_user.dart';
+import 'package:fablocker/remove_user.dart';
 import 'package:flutter/material.dart';
 import 'Style/style.dart';
 import 'package:http/http.dart' as http;
@@ -100,7 +104,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         _showSnackBar('Bienvenue $username');
                           Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => PrincipalePage()),
+                            MaterialPageRoute(builder: (context) => removeUsers()),
                           );
                       } else {
                          _showSnackBar('Adresse e-mail ou mot de passe incorrect !');

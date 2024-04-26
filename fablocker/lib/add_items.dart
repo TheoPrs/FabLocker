@@ -1,3 +1,5 @@
+// ignore_for_file: camel_case_types, use_key_in_widget_constructors, non_constant_identifier_names, use_build_context_synchronously, avoid_print
+
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
@@ -6,6 +8,10 @@ import 'package:flutter/services.dart';
 import 'Style/style.dart';
 import 'PrincipalePage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'class/items.dart';
+import 'class/locker.dart';
+
+
 
 class addItems extends StatefulWidget{
   const addItems({Key? key});
@@ -120,28 +126,22 @@ class _addItems extends State<addItems> {
               
               const SizedBox(height:20.0),
               
-              
-              
-              //Bouton "Créer l'objet"
               ElevatedButton(
                 onPressed: () async {
-                  // if( object_name.text.isEmpty || object_description.text.isEmpty || object_loan_duration.text.isEmpty ){
-                  //   print("test");
-                  // }
-                  
                   String object = object_name.text;
                   String description = object_description.text;
                   int borrow_duration = int.parse(object_loan_duration.text);
                   
+                  Locker lockerid = Locker(id: 45);
                   Item item = Item(
-                    id_locker: 46,
                     name: object,
                     description: description,
                     availability: true,
                     weight: myValue,
                     borrow_duration: borrow_duration,
+                    lockerId: lockerid
                   );
-
+                  
                   Map<String, dynamic> itemData = item.toJson();
                   SharedPreferences prefs = await SharedPreferences.getInstance();
                   String? userToken = prefs.getString('token');
@@ -162,7 +162,7 @@ class _addItems extends State<addItems> {
                         context,
                         MaterialPageRoute(builder: (context) => PrincipalePage()),
                         );
-                      } else if (response.statusCode == 400){
+                      } else if (response.statusCode == 401){
                         print('test');
                       } else {
                         print('Erreur lors de la création de l\'objet\': ${response.statusCode}');
@@ -178,35 +178,5 @@ class _addItems extends State<addItems> {
         ),
       ),
     );
-  }
-}
-
-
-class Item {
-  final int id_locker;
-  final String name;
-  final String description;
-  final bool availability;
-  final double weight;
-  final int borrow_duration;
-
-  Item({
-    required this.id_locker,
-    required this.name,
-    required this.description,
-    required this.availability,
-    required this.weight,
-    required this.borrow_duration,
-  });
-
-  Map<String, dynamic> toJson() {
-    return {
-      'id_locker': id_locker,
-      'name': name,
-      'description': description,
-      'availability': availability,
-      'weight': weight,
-      'borrow_duration' : borrow_duration,
-    };
   }
 }

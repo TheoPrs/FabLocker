@@ -4,16 +4,15 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'Style/style.dart';
 import 'PrincipalePage.dart';
-import 'class/user.dart';
 
-class addUsers extends StatefulWidget {
-  const addUsers({Key? key}) : super(key: key);
+class removeUsers extends StatefulWidget {
+  const removeUsers({Key? key}) : super(key: key);
 
   @override
-  _addUsersState createState() => _addUsersState();
+  _removeUsersState createState() => _removeUsersState();
 }
 
-class _addUsersState extends State<addUsers> {
+class _removeUsersState extends State<removeUsers> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   TextEditingController usernameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
@@ -43,11 +42,11 @@ class _addUsersState extends State<addUsers> {
               const Align(
                 alignment: Alignment(0, -0.85),
                 child: Text(
-                  'Bienvenue sur votre espace d\'inscription !',
+                  'Bienvenue sur votre espace de suppression d\'utilisateur !',
                   style: titleStyle,
                 ),
               ),
-              const SizedBox(height: 50.0),
+              const SizedBox(height: 70.0),
               //Adresse email
               SizedBox(
                 height: 50,
@@ -62,81 +61,30 @@ class _addUsersState extends State<addUsers> {
                   style: inputStyle,
                 ),
               ),
-              const SizedBox(height: 20.0),
-              //Mot de passe
-              SizedBox(
-                height: 50,
-                width: 440,
-                child: TextField(
-                  controller: passwordController,
-                  obscureText: true,
-                  decoration: const InputDecoration(
-                    labelText: 'Mot de passe ',
-                    labelStyle: inputDecorationStyle,
-                    border: OutlineInputBorder(),
-                  ),
-                  style: inputStyle,
-                ),
-              ),
-              const SizedBox(height: 20.0),
-              //Retype mot de passe
-              SizedBox(
-                height: 50,
-                width: 440,
-                child: TextField(
-                  controller: checkPasswordController,
-                  obscureText: true,
-                  decoration: const InputDecoration(
-                    labelText: 'Tapez à nouveau votre mot de passe',
-                    labelStyle: inputDecorationStyle,
-                    border: OutlineInputBorder(),
-                  ),
-                  style: inputStyle,
-                ),
-              ),
-              const SizedBox(height: 50.0),
+              const SizedBox(height: 100.0),
               ElevatedButton(
                 onPressed: () async {
 
                   String username = usernameController.text;
-                  String password = passwordController.text;
-                  String checkPassword = checkPasswordController.text;
 
-                  if (username.isEmpty || password.isEmpty || checkPassword.isEmpty) {
+                  if (username.isEmpty) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
-                        content: Text('Chaque champ doit être rempli !'),
+                        content: Text('Pensez à bien remplir le champ !'),
                       ),
                     );
                   } else if (!usernameRegExp.hasMatch(username)) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
-                        content: Text('L\'adresse e-mail doit être écrite au format isen@junia.com et le mot de passe au format valide.'),
-                      ),
-                    );
-                  } else if ((!passwordRegExp.hasMatch(password) || (!passwordRegExp.hasMatch(checkPassword)))) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Le mot de passe doit faire 8 caractères minimum avec des majuscules, minuscules ou bien des chiffres !'),
-                      ),
-                    );
-                  } else if (password != checkPassword) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Les mots de passe doivent être identiques !'),
+                        content: Text('L\'adresse e-mail doit être écrite au format isen@junia.com.'),
                       ),
                     );
                   } else {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
-                        content: Text('Profil créé avec succès !'),
+                        content: Text('Profil supprimé avec succès !'),
                       ),
                     );
-
-
-                    int rfid = 496512; 
-
-
                     Navigator.push(
                         context,
                         MaterialPageRoute(builder: (context) => PrincipalePage()),
@@ -145,28 +93,23 @@ class _addUsersState extends State<addUsers> {
 
                     try {
                       final response = await http.post(
-                        Uri.parse('http://localhost:3000/auth/register'),
+                        Uri.parse('http://localhost:3000/auth/delete'),
                         body: {
-                          'rfid': rfid.toString(),
-                          'role': 'user',
                           'email': username,
-                          'password': password,
                         },
                       );
 
                       if (response.statusCode == 200) {
-                        print('Profil créé avec succès !');
-                      } else if (response.statusCode == 400){
-                        print('Le RFID est déjà attribué');
+                        print('Profil supprimé avec succès !');
                       } else {
-                        print('Erreur lors de la création du profil: ${response.statusCode}');
+                        print('Erreur lors de la supppression du profil: ${response.statusCode}');
                       }
                     } catch (e) {
                       print('Erreur lors de la requête: $e');
                     }
                   }
                 },
-                child: const Text('Créer l\'utilisateur'),
+                child: const Text('Supprimer l\'utilisateur'),
               ),
             ],
           ),

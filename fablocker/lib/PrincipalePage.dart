@@ -2,24 +2,9 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'HistoriquePage.dart';
 import 'package:http/http.dart' as http;
-
-class ToolInfo {
-  int id_locker;
-  bool availability;
-  int weight;
-  String name;
-  int borrow_duration;
-  String description;
-
-  ToolInfo({
-    required this.id_locker,
-    required this.availability,
-    required this.weight,
-    required this.name,
-    required this.borrow_duration,
-    required this.description,
-  });
-}
+import 'class/locker.dart';
+import 'class/toolInfos.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 List<ToolInfo> tools = [];
 
@@ -28,7 +13,7 @@ List<ToolInfo> parseData(String jsonData) {
   final List<dynamic> data = json.decode(jsonData);
   for (var item in data) {
     parsedData.add(ToolInfo(
-      id_locker: item['id_locker'],
+      locker: item['locker'],
       availability: item['availability'],
       weight: item['weight'],
       name: item['name'],
@@ -54,16 +39,19 @@ class _PrincipalePageState extends State<PrincipalePage> {
     super.initState();
     fetchData();
   }
+  Future<void> fetchData() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? userToken = prefs.getString('token');
+    print(userToken);
   Map<String, String> headers = {
     'Content-Type': 'application/json; charset=UTF-8',
-    'Authorization' : 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRlc3RAanVuaWEuY29tIiwicmZpZCI6IjEyMzU0NTY4NTQyIiwicm9sZSI6InVzZXIiLCJpYXQiOjE3MTM4ODI5NTYsImV4cCI6MTcxMzk2OTM1Nn0.10kLGtzi72BFiAi84Hd0ALna-t-EisFPjRMmzMwY5Us',};
-  Future<void> fetchData() async {
+    'Authorization' : 'Bearer $userToken',};
     final response = await http.get(Uri.parse('http://localhost:3000/api/items'),headers: headers);
     if (response.statusCode == 200) {
       final jsonData = response.body;
       setState(() {
         tools = parseData(jsonData);
-        tools.sort((a, b) => a.id_locker.compareTo(b.id_locker));
+        tools.sort((a, b) => a.locker.id.compareTo(b.locker.id));
         isLoading = false;
       });
     } else {
@@ -136,7 +124,7 @@ class _PrincipalePageState extends State<PrincipalePage> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
-                              'Casier : ${tools[index].id_locker}',
+                              'Casier : ${tools[index].locker.id}',
                               style: const TextStyle(
                                 color: Colors.white,
                               ),
@@ -215,7 +203,7 @@ class _PrincipalePageState extends State<PrincipalePage> {
       case 'historique':
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => HistoriquePage(data: tools[index].id_locker,)),
+          MaterialPageRoute(builder: (context) => HistoriquePage(data: tools[index].locker.id,)),
         );
         print('Navigation vers la page Historique');
         break;
