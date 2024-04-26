@@ -1,6 +1,4 @@
 import 'dart:convert';
-import 'package:fablocker/ConnexionPage.dart';
-import 'package:fablocker/add_user.dart';
 import 'package:fablocker/remove_user.dart';
 import 'package:flutter/material.dart';
 import 'package:jwt_decode/jwt_decode.dart';
@@ -9,37 +7,35 @@ import 'package:http/http.dart' as http;
 import 'class/locker.dart';
 import 'class/toolInfos.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'add_items.dart';
-import 'addItemsPage.dart';
+import 'PrincipalePage.dart';
+import 'connexionPage.dart';
 
-List<ToolInfo> tools = [];
+List<Locker> locks = [];
 
-List<ToolInfo> parseData(String jsonData) {
+List<Locker> parseData(String jsonData) {
   final List<dynamic> data = json.decode(jsonData);
-  List<ToolInfo> parsedData = [];
+  List<Locker> parsedData = [];
   for (var item in data) {
-    parsedData.add(ToolInfo(
-      locker: Locker.fromJson(item['locker']), // Créer une instance de Locker à partir de l'objet locker
-      availability: item['availability'],
-      weight: item['weight'],
-      name: item['name'],
-      borrow_duration: item['borrow_duration'],
-      description: item['description'],
-    ));
+    if (item['id'] > 4){
+      parsedData.add(Locker(
+        id : item["id"]
+      ));
+    }
   }
   return parsedData;
 }
 
-class PrincipalePage extends StatefulWidget {
-  PrincipalePage({Key? key}) : super(key: key);
+
+class addItemsPage extends StatefulWidget {
+  addItemsPage({Key? key}) : super(key: key);
 
   @override
-  _PrincipalePageState createState() => _PrincipalePageState();
+  _addItemsPageState createState() => _addItemsPageState();
 }
 
-class _PrincipalePageState extends State<PrincipalePage> {
+class _addItemsPageState extends State<addItemsPage> {
   bool isLoading = true;
-  bool isAdmin = false; // Declare isAdmin as a member variable
+  bool isAdmin = false;
 
   @override
   void initState() {
@@ -67,12 +63,12 @@ class _PrincipalePageState extends State<PrincipalePage> {
         'Content-Type': 'application/json; charset=UTF-8',
         'Authorization': 'Bearer $userToken',
       };
-      final response = await http.get(Uri.parse('http://localhost:3000/api/items'), headers: headers);
+      final response = await http.get(Uri.parse('http://localhost:3000/api/lockers'), headers: headers);
       if (response.statusCode == 200) {
         final jsonData = response.body;
         setState(() {
-          tools = parseData(jsonData);
-          tools.sort((a, b) => a.locker.id.compareTo(b.locker.id));
+          locks = parseData(jsonData);
+          locks.sort((a, b) => a.id.compareTo(b.id));
           isLoading = false;
         });
       } else {
@@ -137,15 +133,6 @@ class _PrincipalePageState extends State<PrincipalePage> {
                 
               },
             ),
-            TextButton(
-              child: const Text('Ajouter un objet'),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => addItemsPage()),
-                );
-              },
-            ),
           ],
         );
       },
@@ -200,12 +187,9 @@ class _PrincipalePageState extends State<PrincipalePage> {
                   mainAxisSpacing: 10.0,
                   childAspectRatio: 1,
                 ),
-                itemCount: tools.length,
+                itemCount: locks.length,
                 itemBuilder: (context, index) {
                   final GlobalKey itemKey = GlobalKey();
-                  bool? stateAvailability = tools[index].availability;
-                  final String textAvailability = stateAvailability == true ? 'Disponible' : 'Indisponible';
-
                   return InkWell(
                     key: itemKey,
                     onTap: () => _showCasierOptions(context, index, itemKey, isAdmin),
@@ -219,20 +203,14 @@ class _PrincipalePageState extends State<PrincipalePage> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
-                              'Casier : ${tools[index].locker.id}',
+                              'Casier : ${locks[index].id}',
                               style: const TextStyle(
                                 color: Colors.white,
                               ),
                             ),
-                            Text(
-                              'Outil : ${tools[index].name}',
-                              style: const TextStyle(
-                                color: Colors.white,
-                              ),
-                            ),
-                            Text(
-                              'État : $textAvailability',
-                              style: const TextStyle(
+                            const Text(
+                              'Disponible',
+                              style: TextStyle(
                                 color: Colors.white,
                               ),
                             ),
@@ -259,23 +237,10 @@ class _PrincipalePageState extends State<PrincipalePage> {
 
     List<PopupMenuEntry<String>> menuItems = [
       const PopupMenuItem(
-        value: 'ouvrir',
-        child: Text('Ouvrir'),
-      ),
-      const PopupMenuItem(
-        value: 'informations',
-        child: Text('Informations'),
+        value: 'Choisir ce casier',
+        child: Text('Choisir'),
       ),
     ];
-
-    if (isAdmin) {
-      menuItems.add(
-        const PopupMenuItem(
-          value: 'historique',
-          child: Text('Historique'),
-        ),
-      );
-    }
 
     final selection = await showMenu(
       context: context,
@@ -290,45 +255,7 @@ class _PrincipalePageState extends State<PrincipalePage> {
         print('Ouvrir casier');
         //
         break;
-      case 'informations':
-        _showToolInformationDialog(context, tools[index]);
-        break;
-      case 'historique':
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => HistoriquePage(data: tools[index].locker.id,)),
-        );
-        print('Navigation vers la page Historique');
-        break;
-      default:
+        default:
     }
-  }
-
-  void _showToolInformationDialog(BuildContext context, ToolInfo toolInfo) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Informations de l\'Outil'),
-          content: SingleChildScrollView(
-            child: ListBody(
-              children: <Widget>[
-                Text('Nom de l\'Outil : ${toolInfo.name}'),
-                Text('Description: ${toolInfo.description}'),
-                Text('Durée d\'emprunt maximale : ${toolInfo.borrow_duration} jours'),
-              ],
-            ),
-          ),
-          actions: <Widget>[
-            TextButton(
-              child: const Text('Fermer'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
-    );
   }
 }

@@ -2,6 +2,7 @@
 
 import 'dart:convert';
 import 'package:fablocker/PrincipalePage.dart';
+import 'package:fablocker/addItemsPage.dart';
 import 'package:fablocker/add_items.dart';
 import 'package:fablocker/add_user.dart';
 import 'package:fablocker/remove_user.dart';
@@ -10,14 +11,14 @@ import 'Style/style.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key}) : super(key: key);
+class connexionPage extends StatefulWidget {
+  const connexionPage({Key? key}) : super(key: key);
 
   @override
-  _MyHomePageState createState() => _MyHomePageState();
+  _connexionPageState createState() => _connexionPageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _connexionPageState extends State<connexionPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   TextEditingController usernameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();

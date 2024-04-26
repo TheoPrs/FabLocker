@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'Style/style.dart';
 import 'PrincipalePage.dart';
-import 'class/user.dart';
 
 class addUsers extends StatefulWidget {
   const addUsers({Key? key}) : super(key: key);
