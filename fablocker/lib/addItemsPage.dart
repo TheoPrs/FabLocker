@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:fablocker/PrincipalePage.dart';
 import 'package:fablocker/add_items.dart';
 import 'package:flutter/material.dart';
 import 'package:jwt_decode/jwt_decode.dart';
@@ -76,9 +77,17 @@ class _addItemsPageState extends State<addItemsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: const Text('Ici vous retrouverez tous les casiers vides !'),
         actions:[
     if (isAdmin) ...[
+      IconButton(icon: const Icon(Icons.arrow_back),
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => PrincipalePage()),
+          );
+        },),
       SizedBox(width: 250.0),
       IconButton(
   icon: const Icon(Icons.add),
