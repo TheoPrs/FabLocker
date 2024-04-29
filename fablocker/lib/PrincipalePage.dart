@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously, avoid_print
+
 import 'dart:convert';
 import 'package:fablocker/ConnexionPage.dart';
 import 'package:fablocker/remove_user.dart';
@@ -96,7 +98,7 @@ class _PrincipalePageState extends State<PrincipalePage> {
           );
         },
       ),
-      SizedBox(width: 250.0),
+      const SizedBox(width: 250.0),
       IconButton(
   icon: const Icon(Icons.add),
   onPressed: () {
@@ -152,7 +154,7 @@ class _PrincipalePageState extends State<PrincipalePage> {
   },
 ),
     ],
-    SizedBox(width: 250.0),
+    const SizedBox(width: 250.0),
     IconButton(
       icon: const Icon(Icons.exit_to_app),
       onPressed: () async {
@@ -161,11 +163,11 @@ class _PrincipalePageState extends State<PrincipalePage> {
         await prefs.clear();
         Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => connexionPage()),
+                  MaterialPageRoute(builder: (context) => const connexionPage()),
                 );
       },
     ),
-    SizedBox(width: 150.0),
+    const SizedBox(width: 150.0),
   ],
       ),
       body: isLoading

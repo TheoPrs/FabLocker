@@ -1,3 +1,5 @@
+// ignore_for_file: camel_case_types
+
 import 'dart:convert';
 import 'package:fablocker/PrincipalePage.dart';
 import 'package:fablocker/add_items.dart';
@@ -88,7 +90,7 @@ class _addItemsPageState extends State<addItemsPage> {
             MaterialPageRoute(builder: (context) => PrincipalePage()),
           );
         },),
-      SizedBox(width: 250.0),
+      const SizedBox(width: 250.0),
       IconButton(
   icon: const Icon(Icons.add),
   onPressed: () {
@@ -135,7 +137,7 @@ class _addItemsPageState extends State<addItemsPage> {
   },
 ),
     ],
-    SizedBox(width: 250.0),
+    const SizedBox(width: 250.0),
     IconButton(
       icon: const Icon(Icons.exit_to_app),
       onPressed: () async {
@@ -144,11 +146,11 @@ class _addItemsPageState extends State<addItemsPage> {
         await prefs.clear();
         Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => connexionPage()),
+                  MaterialPageRoute(builder: (context) => const connexionPage()),
                 );
       },
     ),
-    SizedBox(width: 150.0),
+    const SizedBox(width: 150.0),
   ],
       ),
       body: isLoading
