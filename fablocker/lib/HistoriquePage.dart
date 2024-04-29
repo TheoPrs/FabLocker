@@ -1,44 +1,63 @@
 // ignore_for_file: file_names
-
-import 'package:fablocker/PrincipalePage.dart';
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'Style/style.dart';
 import 'package:intl/intl.dart';
+import 'package:http/http.dart' as http;
+import 'class/historique.dart';
 
-class Historique {
-  final int casier;
-  final String item;
-  final String utilisateur;
-  final DateTime dateEmprunt;
-  DateTime dateRetour;
 
-  Historique(this.casier,this.item, this.utilisateur, this.dateEmprunt,this.dateRetour);
+
+List<Historique> historiqueList = [];
+
+List<Historique> parseData (String jsonData){
+  List<Historique> parsedData = [];
+  final List<dynamic> data = jsonDecode(jsonData);
+  for  (var histo in data ){
+    parsedData.add(Historique(
+      histo['casier'],
+      histo['item'],
+      histo['utilisateur'],
+      DateTime.parse(histo['dateEmprunt']),
+      DateTime.parse(histo['dateRetour']),
+    ));
+  } 
+  return parsedData;
 }
 
 class HistoriquePage extends StatelessWidget {
   final int data;
-  final List<Historique> historiqueList = [
-    Historique(4, 'objet1','Alice', DateTime(2024,4,12,0,46),DateTime(2025,4,12,0,46)),
-    Historique(4, 'objet1','Alice', DateTime(2024,4,12,0,46),DateTime(2025,4,12,0,46)),
-    Historique(75, 'objet3','Bob', DateTime(2024,4,20,21,45), DateTime(2024,4,20,21,45)),
-    Historique(3, 'objet2','Charlie',DateTime(2024,4,1,12,0), DateTime(0,0,0)),
+  List<Historique> historiqueList = [
+    Historique(1, 'objet1','Alice', DateTime(2024,4,12,0,46),DateTime(2025,4,12,0,46)),
+    Historique(1, 'objet1','Alice', DateTime(2024,4,12,0,46),DateTime(2025,4,12,0,46)),
+    Historique(1, 'objet3','Bob', DateTime(2024,4,20,21,45), DateTime(2024,4,20,21,45)),
+    Historique(0, 'objet2','Charlie',DateTime(2024,4,1,12,0), DateTime(0,0,0)),
   ];
-
+  /*
+  Future<void> fetchData() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? userToken = prefs.getString('userToken');
+    Map<String, String> headers = {
+    'Content-Type': 'application/json; charset=UTF-8',
+    'Authorization' : 'Bearer $userToken',};
+    
+    final response = await http.get(Uri.parse('https://api.example.com/data'),headers: headers);
+    if (response.statusCode == 200) {
+      final data = response.body;
+      historiqueList = parseData(data);
+    } else {
+      throw Exception('Failed to fetch data');
+    }
+    print(historiqueList);
+  }
+  */
   HistoriquePage({super.key, required this.data});
+  
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (context) => PrincipalePage()),
-            );
-          },
-        ),
         title: const Text('Historique'),
       ),     
       body: Container(
