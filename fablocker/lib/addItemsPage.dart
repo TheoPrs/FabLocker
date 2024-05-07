@@ -1,4 +1,4 @@
-// ignore_for_file: camel_case_types
+// ignore_for_file: camel_case_types, use_build_context_synchronously
 
 import 'dart:convert';
 import 'package:fablocker/PrincipalePage.dart';
@@ -154,71 +154,51 @@ class _addItemsPageState extends State<addItemsPage> {
   ],
       ),
       body: isLoading
-          ? Container(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                border: Border.all(color: Colors.blue, width: 2),
-                image: const DecorationImage(
-                  image: AssetImage('assets/background.png'),
-                  fit: BoxFit.cover,
-                ),
-              ),
-              child: const Center(
-                child: CircularProgressIndicator(), // Garder le CircularProgress ici
-              ),
-            )
-          : Container(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                border: Border.all(color: Colors.blue, width: 2),
-                image: const DecorationImage(
-                  image: AssetImage('assets/background.png'),
-                  fit: BoxFit.cover,
-                ),
-              ),
-              child: GridView.builder(
-                padding: const EdgeInsets.all(10.0),
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 4,
-                  crossAxisSpacing: 10.0,
-                  mainAxisSpacing: 10.0,
-                  childAspectRatio: 1,
-                ),
-                itemCount: locks.length,
-                itemBuilder: (context, index) {
-                  final GlobalKey itemKey = GlobalKey();
-                  return InkWell(
-                    key: itemKey,
-                    onTap: () => _showCasierOptions(context, index, itemKey, isAdmin),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        border: Border.all(color: Colors.white, width: 2),
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              'Casier : ${locks[index].id}',
-                              style: const TextStyle(
-                                color: Colors.white,
-                              ),
-                            ),
-                            const Text(
-                              'Disponible',
-                              style: TextStyle(
-                                color: Colors.white,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  );
-                },
-              ),
+          ? const Center(
+            child: CircularProgressIndicator(), // Garder le CircularProgress ici
+          )
+          : GridView.builder(
+            padding: const EdgeInsets.all(10.0),
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 4,
+              crossAxisSpacing: 10.0,
+              mainAxisSpacing: 10.0,
+              childAspectRatio: 1,
             ),
+            itemCount: locks.length,
+            itemBuilder: (context, index) {
+              final GlobalKey itemKey = GlobalKey();
+              return InkWell(
+                key: itemKey,
+                onTap: () => _showCasierOptions(context, index, itemKey, isAdmin),
+                child: Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.white, width: 2),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          'Casier : ${locks[index].id}',
+                          style: const TextStyle(
+                            color: Colors.white,
+                          ),
+                        ),
+                        const Text(
+                          'Disponible',
+                          style: TextStyle(
+                            color: Colors.white,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              );
+            },
+          ),
     );
   }
 

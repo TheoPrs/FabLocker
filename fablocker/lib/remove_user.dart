@@ -27,92 +27,84 @@ class _removeUsersState extends State<removeUsers> {
       appBar: AppBar(
         title: const Text('FabLocker'),
       ),
-      body: Container(
-        decoration: const BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage('assets/background.png'), // Ajuster le chemin de l'image
-            fit: BoxFit.cover,
-          ),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Align(
-                alignment: Alignment(0, -0.85),
-                child: Text(
-                  'Bienvenue sur votre espace de suppression d\'utilisateur !',
-                  style: titleStyle,
-                ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Align(
+              alignment: Alignment(0, -0.85),
+              child: Text(
+                'Bienvenue sur votre espace de suppression d\'utilisateur !',
+                style: titleStyle,
               ),
-              const SizedBox(height: 70.0),
-              //Adresse email
-              SizedBox(
-                height: 50,
-                width: 440,
-                child: TextField(
-                  controller: usernameController,
-                  decoration: const InputDecoration(
-                    labelText: 'Adresse e-mail',
-                    labelStyle: inputDecorationStyle,
-                    border: OutlineInputBorder(),
-                  ),
-                  style: inputStyle,
+            ),
+            const SizedBox(height: 70.0),
+            //Adresse email
+            SizedBox(
+              height: 50,
+              width: 440,
+              child: TextField(
+                controller: usernameController,
+                decoration: const InputDecoration(
+                  labelText: 'Adresse e-mail',
+                  labelStyle: inputDecorationStyle,
+                  border: OutlineInputBorder(),
                 ),
+                style: inputStyle,
               ),
-              const SizedBox(height: 100.0),
-              ElevatedButton(
-                onPressed: () async {
-
-                  String username = usernameController.text;
-
-                  if (username.isEmpty) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Pensez à bien remplir le champ !'),
-                      ),
+            ),
+            const SizedBox(height: 100.0),
+            ElevatedButton(
+              onPressed: () async {
+      
+                String username = usernameController.text;
+      
+                if (username.isEmpty) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Pensez à bien remplir le champ !'),
+                    ),
+                  );
+                } else if (!usernameRegExp.hasMatch(username)) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('L\'adresse e-mail doit être écrite au format isen@junia.com.'),
+                    ),
+                  );
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Profil supprimé avec succès !'),
+                    ),
+                  );
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => PrincipalePage()),
                     );
-                  } else if (!usernameRegExp.hasMatch(username)) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('L\'adresse e-mail doit être écrite au format isen@junia.com.'),
-                      ),
+      
+      
+                  try {
+                    final response = await http.post(
+                      Uri.parse('http://localhost:3000/auth/delete'),
+                      body: {
+                        'email': username,
+                      },
                     );
-                  } else {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Profil supprimé avec succès !'),
-                      ),
-                    );
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => PrincipalePage()),
-                      );
-
-
-                    try {
-                      final response = await http.post(
-                        Uri.parse('http://localhost:3000/auth/delete'),
-                        body: {
-                          'email': username,
-                        },
-                      );
-
-                      if (response.statusCode == 200) {
-                        print('Profil supprimé avec succès !');
-                      } else {
-                        print('Erreur lors de la supppression du profil: ${response.statusCode}');
-                      }
-                    } catch (e) {
-                      print('Erreur lors de la requête: $e');
+      
+                    if (response.statusCode == 200) {
+                      print('Profil supprimé avec succès !');
+                    } else {
+                      print('Erreur lors de la supppression du profil: ${response.statusCode}');
                     }
+                  } catch (e) {
+                    print('Erreur lors de la requête: $e');
                   }
-                },
-                child: const Text('Supprimer l\'utilisateur'),
-              ),
-            ],
-          ),
+                }
+              },
+              child: const Text('Supprimer l\'utilisateur'),
+            ),
+          ],
         ),
       ),
     );
