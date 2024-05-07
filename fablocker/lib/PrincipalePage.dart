@@ -1,4 +1,4 @@
-// ignore_for_file: use_build_context_synchronously, avoid_print
+// ignore_for_file: use_build_context_synchronously, avoid_print, use_super_parameters, library_private_types_in_public_api
 
 import 'dart:convert';
 import 'package:fablocker/ConnexionPage.dart';
@@ -11,6 +11,7 @@ import 'class/locker.dart';
 import 'class/toolInfos.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'addItemsPage.dart';
+import 'remove_item.dart';
 
 List<ToolInfo> tools = [];
 
@@ -31,7 +32,7 @@ List<ToolInfo> parseData(String jsonData) {
 }
 
 class PrincipalePage extends StatefulWidget {
-  PrincipalePage({Key? key}) : super(key: key);
+  const PrincipalePage({Key? key}) : super(key: key);
 
   @override
   _PrincipalePageState createState() => _PrincipalePageState();
@@ -39,7 +40,7 @@ class PrincipalePage extends StatefulWidget {
 
 class _PrincipalePageState extends State<PrincipalePage> {
   bool isLoading = true;
-  bool isAdmin = false; // Declare isAdmin as a member variable
+  bool isAdmin = false; 
 
   @override
   void initState() {
@@ -92,11 +93,36 @@ class _PrincipalePageState extends State<PrincipalePage> {
       IconButton(
         icon: const Icon(Icons.delete_forever_outlined),
         onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const removeUsers()),
-          );
-        },
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Supprimer un élément'),
+          content: const Text('Que souhaitez-vous supprimer ?'),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Supprimer un objet'),
+              onPressed: (){
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const removeItems()), //remove items
+                );
+              },
+            ),
+            TextButton(
+              child: const Text('Supprimer un utilisateur'),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const removeUsers()),
+                );
+              },
+            ),
+          ],
+        );
+      },
+    );
+  },
       ),
       const SizedBox(width: 250.0),
       IconButton(

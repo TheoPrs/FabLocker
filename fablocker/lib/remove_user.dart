@@ -25,7 +25,20 @@ class _removeUsersState extends State<removeUsers> {
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
-        title: const Text('FabLocker'),
+        automaticallyImplyLeading: false,
+        title: const Text('Ici vous pourrez supprimer un utilisateur !'),
+        actions:[
+    IconButton(
+      icon: const Icon(Icons.arrow_back),
+      onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const PrincipalePage()),
+          );
+        }
+    ),
+    const SizedBox(width: 740.0),
+  ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -40,7 +53,6 @@ class _removeUsersState extends State<removeUsers> {
               ),
             ),
             const SizedBox(height: 70.0),
-            //Adresse email
             SizedBox(
               height: 50,
               width: 440,
