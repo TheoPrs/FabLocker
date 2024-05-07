@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 // Couleurs personnalisées pour la disponibilité
 const Color greenPastel = Color.fromARGB(127, 144, 238, 144); // vert pastel
 const Color redPastel = Color.fromARGB(127, 255, 160, 122); // rouge pastel
+const Color grayPastel = Color.fromARGB(255, 217, 218, 219); // gris pastel
 
 // Styles de texte
 const TextStyle titleStyle = TextStyle(
@@ -48,7 +49,7 @@ BoxDecoration getToolContainerDecoration(bool availability) {
     boxShadow: [
       BoxShadow(
         color: Colors.black.withOpacity(1),
-        blurRadius: 15,
+        blurRadius: 0.001,
         blurStyle: BlurStyle.outer,
       ),
     ],

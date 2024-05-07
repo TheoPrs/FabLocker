@@ -86,6 +86,7 @@ class _PrincipalePageState extends State<PrincipalePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: grayPastel,
       appBar: AppBar(
         automaticallyImplyLeading: false,
         title: const Text('Page d\'accueil'),
@@ -228,14 +229,22 @@ class _PrincipalePageState extends State<PrincipalePage> {
 
   void _showCasierOptions(
       BuildContext context, int index, GlobalKey key, bool isAdmin) async {
+    // Récupère les informations de la case grâce au GlobalKey
     final RenderBox renderBox =
         key.currentContext?.findRenderObject() as RenderBox;
     final Offset offset = renderBox.localToGlobal(Offset.zero);
+    final Size size = renderBox.size;
+
+    // Calcule le centre de la case
+    final double centerX = offset.dx + size.width / 2.4;
+    final double centerY = offset.dy + size.height / 2.4;
+
+    // Crée un RelativeRect pour positionner le menu
     final RelativeRect position = RelativeRect.fromLTRB(
-      offset.dx,
-      offset.dy,
-      offset.dx,
-      offset.dy,
+      centerX,
+      centerY,
+      MediaQuery.of(context).size.width - centerX,
+      MediaQuery.of(context).size.height - centerY,
     );
 
     List<PopupMenuEntry<String>> menuItems = [
