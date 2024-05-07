@@ -118,7 +118,7 @@ class _AddItemsState extends State<AddItems> {
                 String? userToken = prefs.getString('token');
                 try {
                   final response = await http.post(
-                    Uri.parse('http://localhost:3000/api/items/create'),
+                    Uri.parse('http://localhost:3000/api/items'),
                     body: jsonEncode(itemData),
                     headers: <String, String>{
                       'Content-Type': 'application/json; charset=UTF-8',

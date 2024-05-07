@@ -1,26 +1,29 @@
-// ignore_for_file: camel_case_types, use_build_context_synchronously, use_super_parameters, library_private_types_in_public_api, prefer_const_constructors
+// ignore_for_file: avoid_print, use_build_context_synchronously
 
 import 'dart:convert';
-import 'package:fablocker/PrincipalePage.dart';
-import 'package:fablocker/add_items.dart';
 import 'package:flutter/material.dart';
 import 'package:jwt_decode/jwt_decode.dart';
 import 'package:http/http.dart' as http;
-import 'class/locker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'connexionPage.dart';
+import 'class/locker.dart';
+import 'class/toolInfos.dart';
+import 'PrincipalePage.dart';
 
-List<Locker> locks = [];
+List<ToolInfo> tools = [];
 
-List<Locker> parseData(String jsonData) {
+List<ToolInfo> parseData(String jsonData) {
   final List<dynamic> data = json.decode(jsonData);
-  List<Locker> parsedData = [];
-  for (var lock in data) {
-    if (lock['item'] != null ){
-      parsedData.add(Locker(
-        id : lock["id"]
-      ));
-    }
+  List<ToolInfo> parsedData = [];
+  for (var item in data) {
+    parsedData.add(ToolInfo(
+      locker: Locker.fromJson(item['locker']),
+      availability: item['availability'],
+      weight: item['weight'],
+      name: item['name'],
+      borrow_duration: item['borrow_duration'],
+      description: item['description'],
+      itemId: item['id'], 
+    ));
   }
   return parsedData;
 }
@@ -34,7 +37,7 @@ class removeItems extends StatefulWidget {
 
 class _removeItemsState extends State<removeItems> {
   bool isLoading = true;
-  bool isAdmin = false;
+  bool isAdmin = false; 
 
   @override
   void initState() {
@@ -45,6 +48,8 @@ class _removeItemsState extends State<removeItems> {
   Future<void> fetchData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? userToken = prefs.getString('token');
+    print(userToken);
+
     if (userToken != null) {
       Map<String, dynamic> payload = Jwt.parseJwt(userToken);
       if (payload['role'] == 'admin') {
@@ -60,12 +65,12 @@ class _removeItemsState extends State<removeItems> {
         'Content-Type': 'application/json; charset=UTF-8',
         'Authorization': 'Bearer $userToken',
       };
-      final response = await http.get(Uri.parse('http://localhost:3000/api/lockers'), headers: headers);
+      final response = await http.get(Uri.parse('http://localhost:3000/api/items'), headers: headers);
       if (response.statusCode == 200) {
         final jsonData = response.body;
         setState(() {
-          locks = parseData(jsonData);
-          locks.sort((a, b) => a.id.compareTo(b.id));
+          tools = parseData(jsonData);
+          tools.sort((a, b) => a.locker.id.compareTo(b.locker.id));
           isLoading = false;
         });
       } else {
@@ -79,75 +84,88 @@ class _removeItemsState extends State<removeItems> {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: const Text('Ici vous retrouverez tous les casiers utilisés !'),
+        title: const Text('Page d\'accueil'),
         actions:[
-    IconButton(
-      icon: const Icon(Icons.arrow_back),
-      onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => PrincipalePage()),
-          );
-        }
-    ),
-    const SizedBox(width: 740.0),
-  ],
+          IconButton(
+            icon: const Icon(Icons.arrow_back),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const PrincipalePage()),
+              );
+            }
+          ),
+          const SizedBox(width: 1050.0),
+        ],
       ),
       body: isLoading
           ? const Center(
-            child: CircularProgressIndicator(), // Garder le CircularProgress ici
+            child: CircularProgressIndicator(), 
           )
           : GridView.builder(
-            padding: const EdgeInsets.all(10.0),
+            padding: const EdgeInsets.all(30.0), 
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 4,
               crossAxisSpacing: 30.0,
               mainAxisSpacing: 30.0,
               childAspectRatio: 1,
             ),
-            itemCount: locks.length,
+            itemCount: tools.length,
             itemBuilder: (context, index) {
-              if (index < locks.length) {
-                final GlobalKey itemKey = GlobalKey();
-
-                return InkWell(
-                  key: itemKey,
-                  onTap: () => _showCasierOptions(context, index, itemKey, isAdmin),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      border: Border.all(),
-                      borderRadius: BorderRadius.circular(10),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(1),
-                          blurRadius: 15,
-                          blurStyle: BlurStyle.outer,
+              final GlobalKey itemKey = GlobalKey();
+              bool? stateAvailability = tools[index].availability;
+              final String textAvailability = stateAvailability == true ? 'Disponible' : 'Indisponible';
+          
+              return InkWell(
+                key: itemKey,
+                onTap: () => _showCasierOptions(context, index, itemKey, isAdmin),
+                child: Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: tools[index].availability ? Colors.green : Colors.red,
+                      width: 2,
+                    ),
+                    borderRadius: BorderRadius.circular(10),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(1),
+                        blurRadius: 15,
+                        blurStyle: BlurStyle.outer, 
+                      ),
+                    ],
+                  ),
+                  child: Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          'Casier : ${tools[index].locker.id}',
+                          style: const TextStyle(
+                            color: Colors.black,
+                          ),
+                        ),
+                        Text(
+                          'Outil : ${tools[index].name}',
+                          style: const TextStyle(
+                            color: Colors.black,
+                          ),
+                        ),
+                        Text(
+                          'État : $textAvailability',
+                          style: const TextStyle(
+                            color: Colors.black,
+                          ),
                         ),
                       ],
                     ),
-                    child: Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            'Casier id : ${locks[index].id}',
-                            style: const TextStyle(
-                              color: Colors.black,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
                   ),
-                );
-              } else {
-                return const SizedBox();
-              }
+                ),
+              );
             },
-
           ),
     );
   }
+
   void _showCasierOptions(BuildContext context, int index, GlobalKey key, bool isAdmin) async {
     final RenderBox renderBox = key.currentContext?.findRenderObject() as RenderBox;
     final Offset offset = renderBox.localToGlobal(Offset.zero);
@@ -160,8 +178,8 @@ class _removeItemsState extends State<removeItems> {
 
     List<PopupMenuEntry<String>> menuItems = [
       const PopupMenuItem(
-        value: 'Vider ce casier',
-        child: Text('Vider'),
+        value: 'Supprimer',
+        child: Text('Supprimer'),
       ),
     ];
 
@@ -171,13 +189,36 @@ class _removeItemsState extends State<removeItems> {
       items: menuItems,
     );
 
-    switch(selection){
-      case 'Vider ce casier':
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => PrincipalePage()),
-        );
+    int? idItem = tools[index].itemId; 
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? userToken = prefs.getString('token');
+    Map<String, String> headers = {
+      'Content-Type': 'application/json; charset=UTF-8',
+      'Authorization': 'Bearer $userToken',
+    };
+
+    switch (selection) {
+      case 'Supprimer':
+        try {
+          final response = await http.delete(
+            Uri.parse('http://localhost:3000/api/items/$idItem'), 
+            headers: headers
+          );
+          print(response.request);
+          if (response.statusCode == 200) {
+            print('Objet supprimé avec succès !');
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const PrincipalePage()),
+            );
+          } else {
+            print('Erreur lors de la supppression de l\'item: ${response.statusCode}');
+          }
+        } catch (e) {
+          print('Erreur lors de la requête: $e');
+        }
         break;
+      default:
     }
   }
 }
