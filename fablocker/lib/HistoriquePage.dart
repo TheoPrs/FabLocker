@@ -7,7 +7,6 @@ import 'package:http/http.dart' as http;
 import 'class/historique.dart';
 
 
-
 List<Historique> historiqueList = [];
 
 List<Historique> parseData (String jsonData){
@@ -31,7 +30,7 @@ class HistoriquePage extends StatelessWidget {
     Historique(1, 'objet1','Alice', DateTime(2024,4,12,0,46),DateTime(2025,4,12,0,46)),
     Historique(1, 'objet1','Alice', DateTime(2024,4,12,0,46),DateTime(2025,4,12,0,46)),
     Historique(1, 'objet3','Bob', DateTime(2024,4,20,21,45), DateTime(2024,4,20,21,45)),
-    Historique(0, 'objet2','Charlie',DateTime(2024,4,1,12,0), DateTime(0,0,0)),
+    Historique(3, 'objet2','Charlie',DateTime(2024,4,1,12,0), DateTime(0,0,0)),
   ];
   /*
   Future<void> fetchData() async {
@@ -60,16 +59,7 @@ class HistoriquePage extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Historique'),
       ),     
-      body: Container(
-        decoration: BoxDecoration(
-          color: Colors.white,
-          border: Border.all(color: Colors.blue, width: 2),
-          image: const DecorationImage(
-            image: AssetImage('assets/background.png'),
-            fit: BoxFit.cover,
-          ),
-        ),
-      child: ListView.builder(
+      body: ListView.builder(
         itemCount: historiqueList.length,
         itemBuilder: (context, index) {
           final historique = historiqueList[index];
@@ -100,7 +90,6 @@ class HistoriquePage extends StatelessWidget {
               return Container();
             }
         },
-      ),
-    ));
+      ));
   }
 }

@@ -15,16 +15,15 @@ List<Locker> locks = [];
 List<Locker> parseData(String jsonData) {
   final List<dynamic> data = json.decode(jsonData);
   List<Locker> parsedData = [];
-  for (var item in data) {
-    if (item['item'] == null ){
+  for (var lock in data) {
+    if (lock['item'] == null ){
       parsedData.add(Locker(
-        id : item["id"]
+        id : lock["id"]
       ));
     }
   }
   return parsedData;
 }
-
 
 class addItemsPage extends StatefulWidget {
   addItemsPage({Key? key}) : super(key: key);
@@ -141,7 +140,6 @@ class _addItemsPageState extends State<addItemsPage> {
     IconButton(
       icon: const Icon(Icons.exit_to_app),
       onPressed: () async {
-        // Supprimer les informations de connexion enregistrées
         SharedPreferences prefs = await SharedPreferences.getInstance();
         await prefs.clear();
         Navigator.push(
@@ -161,47 +159,53 @@ class _addItemsPageState extends State<addItemsPage> {
             padding: const EdgeInsets.all(10.0),
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 4,
-              crossAxisSpacing: 10.0,
-              mainAxisSpacing: 10.0,
+              crossAxisSpacing: 30.0,
+              mainAxisSpacing: 30.0,
               childAspectRatio: 1,
             ),
             itemCount: locks.length,
             itemBuilder: (context, index) {
-              final GlobalKey itemKey = GlobalKey();
-              return InkWell(
-                key: itemKey,
-                onTap: () => _showCasierOptions(context, index, itemKey, isAdmin),
-                child: Container(
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colors.white, width: 2),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          'Casier : ${locks[index].id}',
-                          style: const TextStyle(
-                            color: Colors.white,
-                          ),
-                        ),
-                        const Text(
-                          'Disponible',
-                          style: TextStyle(
-                            color: Colors.white,
-                          ),
+              if (index < locks.length) {
+                final GlobalKey itemKey = GlobalKey();
+
+                return InkWell(
+                  key: itemKey,
+                  onTap: () => _showCasierOptions(context, index, itemKey, isAdmin),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      border: Border.all(),
+                      borderRadius: BorderRadius.circular(10),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(1),
+                          blurRadius: 15,
+                          blurStyle: BlurStyle.outer,
                         ),
                       ],
                     ),
+                    child: Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            'Casier id : ${locks[index].id}',
+                            style: const TextStyle(
+                              color: Colors.black,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
-                ),
-              );
+                );
+              } else {
+                return const SizedBox();
+              }
             },
+
           ),
     );
   }
-
   void _showCasierOptions(BuildContext context, int index, GlobalKey key, bool isAdmin) async {
     final RenderBox renderBox = key.currentContext?.findRenderObject() as RenderBox;
     final Offset offset = renderBox.localToGlobal(Offset.zero);

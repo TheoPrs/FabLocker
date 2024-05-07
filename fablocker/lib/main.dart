@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'ConnexionPage.dart'; 
+import 'add_user.dart';
 
 void main() {
   runApp(const MyApp());
