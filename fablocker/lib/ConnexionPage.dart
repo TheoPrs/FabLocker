@@ -29,95 +29,87 @@ class _connexionPageState extends State<connexionPage> {
         automaticallyImplyLeading: false,
         title: const Text('FabLocker'),
       ),
-      body: Container(
-        decoration: const BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage('assets/background.png'), 
-            fit: BoxFit.cover,
-          ),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Align(
-                alignment: Alignment(0, -0.85),
-                child: Text(
-                  'Bienvenue sur votre application FabLocker !',
-                  style: titleStyle
-                ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Align(
+              alignment: Alignment(0, -0.85),
+              child: Text(
+                'Bienvenue sur votre application FabLocker !',
+                style: titleStyle
               ),
-              const SizedBox(height: 50.0),
-              SizedBox(
-                height: 50,
-                width: 440,
-                child: TextField(
-                  controller: usernameController,
-                  decoration: const InputDecoration(
-                    labelText: 'Adresse e-mail',
-                    labelStyle: inputDecorationStyle,
-                    border: OutlineInputBorder(),
-                  ),
-                  style: inputStyle,
+            ),
+            const SizedBox(height: 50.0),
+            SizedBox(
+              height: 50,
+              width: 440,
+              child: TextField(
+                controller: usernameController,
+                decoration: const InputDecoration(
+                  labelText: 'Adresse e-mail',
+                  labelStyle: inputDecorationStyle,
+                  border: OutlineInputBorder(),
                 ),
+                style: inputStyle,
               ),
-              const SizedBox(height: 20.0),
-              SizedBox(
-                height: 50,
-                width: 440,
-                child: TextField(
-                  controller: passwordController,
-                  obscureText: true,
-                  decoration: const InputDecoration(
-                    labelText: 'Mot de passe',
-                    labelStyle: inputDecorationStyle,
-                    border: OutlineInputBorder(),
-                  ),
-                  style: inputStyle,
+            ),
+            const SizedBox(height: 20.0),
+            SizedBox(
+              height: 50,
+              width: 440,
+              child: TextField(
+                controller: passwordController,
+                obscureText: true,
+                decoration: const InputDecoration(
+                  labelText: 'Mot de passe',
+                  labelStyle: inputDecorationStyle,
+                  border: OutlineInputBorder(),
                 ),
+                style: inputStyle,
               ),
-              const SizedBox(height: 50.0),
-              ElevatedButton(
-                onPressed: () {
-                  String username = usernameController.text;
-                  String password = passwordController.text;
-                  void _login(String username, String password) async {
-                    try {
-                      final response = await http.post(
-                        Uri.parse('http://localhost:3000/auth/login'),
-                        body: {
-                          'email': username,
-                          'password': password,
-                        },
-                      );
-
-                      if (response.statusCode == 200) {
-                        final responseData = json.decode(response.body);
-                        final token = responseData['access_token'];
-                        SharedPreferences prefs = await SharedPreferences.getInstance();
-                        prefs.setString('token', token);
-                        String? userToken = prefs.getString('token');
-                        print(userToken);
-                        _showSnackBar('Bienvenue $username');
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => PrincipalePage()),
-                          );
-                      } else {
-                         _showSnackBar('Adresse e-mail ou mot de passe incorrect !');
-                      }
-                    } catch (e) {
-                      _showSnackBar('Erreur de connexion');
+            ),
+            const SizedBox(height: 50.0),
+            ElevatedButton(
+              onPressed: () {
+                String username = usernameController.text;
+                String password = passwordController.text;
+                void _login(String username, String password) async {
+                  try {
+                    final response = await http.post(
+                      Uri.parse('http://localhost:3000/auth/login'),
+                      body: {
+                        'email': username,
+                        'password': password,
+                      },
+                    );
+      
+                    if (response.statusCode == 200) {
+                      final responseData = json.decode(response.body);
+                      final token = responseData['access_token'];
+                      SharedPreferences prefs = await SharedPreferences.getInstance();
+                      prefs.setString('token', token);
+                      String? userToken = prefs.getString('token');
+                      print(userToken);
+                      _showSnackBar('Bienvenue $username');
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => PrincipalePage()),
+                        );
+                    } else {
+                       _showSnackBar('Adresse e-mail ou mot de passe incorrect !');
                     }
+                  } catch (e) {
+                    _showSnackBar('Erreur de connexion');
                   }
-                  _login(username, password);
-                  
-                },
-                child: const Text('Se connecter'),
-              ),
-            ],
-          ),
+                }
+                _login(username, password);
+                
+              },
+              child: const Text('Se connecter'),
+            ),
+          ],
         ),
       ),
     );

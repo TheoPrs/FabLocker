@@ -171,94 +171,70 @@ class _PrincipalePageState extends State<PrincipalePage> {
   ],
       ),
       body: isLoading
-          ? Container(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                border: Border.all(color: Colors.blue, width: 2),
-                image: const DecorationImage(
-                  image: AssetImage('assets/background.png'),
-                  fit: BoxFit.cover,
-                ),
-              ),
-              child: const Center(
-                child: CircularProgressIndicator(), // Garder le CircularProgress ici
-              ),
-            )
-          : Container(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                border: Border.all(color: Colors.blue, width: 2),
-                image: const DecorationImage(
-                  image: AssetImage('assets/background.png'),
-                  fit: BoxFit.cover,
-                ),
-              ),
-              child: GridView.builder(
-                padding: const EdgeInsets.all(30.0), // Ajoute une marge uniforme autour de la grille
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 4,
-                  crossAxisSpacing: 30.0,
-                  mainAxisSpacing: 30.0,
-                  childAspectRatio: 1,
-                ),
-                itemCount: tools.length,
-                itemBuilder: (context, index) {
-  final GlobalKey itemKey = GlobalKey();
-  bool? stateAvailability = tools[index].availability;
-  final String textAvailability = stateAvailability == true ? 'Disponible' : 'Indisponible';
-
-  return InkWell(
-    key: itemKey,
-    onTap: () => _showCasierOptions(context, index, itemKey, isAdmin),
-    child: Opacity(
-      opacity: 0.8, // Réglez le niveau d'opacité selon vos besoins
-      child: Container(
-        decoration: BoxDecoration(
-          border: Border.all(
-            color: tools[index].availability ? Colors.green : Colors.red,
-            width: 2,
-          ),
-          borderRadius: BorderRadius.circular(10),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(1),
-              blurRadius: 20,
-              offset: const Offset(0,0),
-              blurStyle: BlurStyle.outer, 
+          ? const Center(
+            child: CircularProgressIndicator(), // Garder le CircularProgress ici
+          )
+          : GridView.builder(
+            padding: const EdgeInsets.all(30.0), // Ajoute une marge uniforme autour de la grille
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 4,
+              crossAxisSpacing: 30.0,
+              mainAxisSpacing: 30.0,
+              childAspectRatio: 1,
             ),
-          ],
-        ),
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                'Casier : ${tools[index].locker.id}',
-                style: const TextStyle(
-                  color: Colors.white,
-                ),
-              ),
-              Text(
-                'Outil : ${tools[index].name}',
-                style: const TextStyle(
-                  color: Colors.white,
-                ),
-              ),
-              Text(
-                'État : $textAvailability',
-                style: const TextStyle(
-                  color: Colors.white,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    ),
-  );
-},
-              ),
+            itemCount: tools.length,
+            itemBuilder: (context, index) {
+              final GlobalKey itemKey = GlobalKey();
+              bool? stateAvailability = tools[index].availability;
+              final String textAvailability = stateAvailability == true ? 'Disponible' : 'Indisponible';
+          
+              return InkWell(
+                key: itemKey,
+                onTap: () => _showCasierOptions(context, index, itemKey, isAdmin),
+                child: Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: tools[index].availability ? Colors.green : Colors.red,
+                      width: 2,
+                    ),
+                    borderRadius: BorderRadius.circular(10),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(1),
+                        blurRadius: 15,
+                        blurStyle: BlurStyle.outer, 
+                      ),
+                    ],
+                  ),
+                  child: Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+          Text(
+            'Casier : ${tools[index].locker.id}',
+            style: const TextStyle(
+              color: Colors.black,
             ),
+          ),
+          Text(
+            'Outil : ${tools[index].name}',
+            style: const TextStyle(
+              color: Colors.black,
+            ),
+          ),
+          Text(
+            'État : $textAvailability',
+            style: const TextStyle(
+              color: Colors.black,
+            ),
+          ),
+                      ],
+                    ),
+                  ),
+                ),
+              );
+            },
+          ),
     );
   }
 
