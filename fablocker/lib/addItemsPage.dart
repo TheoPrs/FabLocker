@@ -108,7 +108,7 @@ class _addItemsPageState extends State<addItemsPage> {
                   SharedPreferences prefs = await SharedPreferences.getInstance();
                   String? userToken = prefs.getString('token');
                   final response = await http.post(
-                        Uri.parse('http://localhost:3000/api/lockers/add'),
+                        Uri.parse('http://localhost:3000/api/lockers'),
                         headers: <String, String>{
                           'Content-Type': 'application/json; charset=UTF-8',
                           'Authorization' : 'Bearer $userToken',

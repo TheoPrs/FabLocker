@@ -1,4 +1,5 @@
-// lib/PrincipalePage.dart
+// ignore_for_file: use_build_context_synchronously, avoid_print, use_super_parameters, library_private_types_in_public_api
+
 import 'dart:convert';
 import 'package:fablocker/ConnexionPage.dart';
 import 'package:fablocker/remove_user.dart';
@@ -11,6 +12,8 @@ import 'class/toolInfos.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'addItemsPage.dart';
 import 'Style/style.dart'; // Importation du fichier de styles
+import 'remove_item.dart';
+
 
 List<ToolInfo> tools = [];
 
@@ -31,7 +34,7 @@ List<ToolInfo> parseData(String jsonData) {
 }
 
 class PrincipalePage extends StatefulWidget {
-  PrincipalePage({Key? key}) : super(key: key);
+  const PrincipalePage({Key? key}) : super(key: key);
 
   @override
   _PrincipalePageState createState() => _PrincipalePageState();
@@ -39,7 +42,7 @@ class PrincipalePage extends StatefulWidget {
 
 class _PrincipalePageState extends State<PrincipalePage> {
   bool isLoading = true;
-  bool isAdmin = false; // Declare isAdmin as a member variable
+  bool isAdmin = false; 
 
   @override
   void initState() {
@@ -90,10 +93,12 @@ class _PrincipalePageState extends State<PrincipalePage> {
       appBar: AppBar(
         automaticallyImplyLeading: false,
         title: const Text('Page d\'accueil'),
+
         actions: [
           if (isAdmin) ...[
             IconButton(
               icon: const Icon(Icons.delete_forever_outlined),
+
               onPressed: () {
                 Navigator.push(
                   context,
@@ -218,6 +223,7 @@ class _PrincipalePageState extends State<PrincipalePage> {
                             style: basicText,
                           ),
                         ],
+
                       ),
                     ),
                   ),
