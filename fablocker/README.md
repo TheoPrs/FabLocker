@@ -1,16 +1,19 @@
-# fablocker
+# FabLocker
 
-A new Flutter project.
+Let's borrow items 
 
-## Getting Started
+## Presentatioon
 
-This project is a starting point for a Flutter application.
+This project is dedicated to the FabLab ( Isen Lille ) 
 
-A few resources to get you started if this is your first Flutter project:
+Created by ISEN Student for the FabLab
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+This is only the front end part. 
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+You can find the back end part here : https://github.com/fab-locker/backend
+
+### First Use 
+
+To launch the project use flutter library 
+
+flutter: ^3.0.2

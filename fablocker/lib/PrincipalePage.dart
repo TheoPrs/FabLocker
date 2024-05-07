@@ -1,9 +1,11 @@
 // ignore_for_file: use_build_context_synchronously, avoid_print
 
 import 'dart:convert';
+import 'dart:ui';
 import 'package:fablocker/ConnexionPage.dart';
 import 'package:fablocker/remove_user.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:jwt_decode/jwt_decode.dart';
 import 'HistoriquePage.dart';
 import 'package:http/http.dart' as http;
@@ -19,7 +21,7 @@ List<ToolInfo> parseData(String jsonData) {
   List<ToolInfo> parsedData = [];
   for (var item in data) {
     parsedData.add(ToolInfo(
-      locker: Locker.fromJson(item['locker']), // Créer une instance de Locker à partir de l'objet locker
+      locker: Locker.fromJson(item['locker']), 
       availability: item['availability'],
       weight: item['weight'],
       name: item['name'],
@@ -39,7 +41,7 @@ class PrincipalePage extends StatefulWidget {
 
 class _PrincipalePageState extends State<PrincipalePage> {
   bool isLoading = true;
-  bool isAdmin = false; // Declare isAdmin as a member variable
+  bool isAdmin = false; 
 
   @override
   void initState() {
@@ -89,15 +91,40 @@ class _PrincipalePageState extends State<PrincipalePage> {
         title: const Text('Page d\'accueil'),
         actions:[
     if (isAdmin) ...[
-      IconButton(
-        icon: const Icon(Icons.delete_forever_outlined),
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const removeUsers()),
-          );
-        },
-      ),
+IconButton(
+  icon: const Icon(Icons.delete_outline_outlined),
+  onPressed: () {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Supprimer un élément'),
+          content: const Text('Que souhaitez-vous supprimer ?'),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('supprimer un casier'),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => addItemsPage()),
+                );
+              },
+            ),
+            TextButton(
+              child: const Text('Supprimer un utilisateur'),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const removeUsers()),
+                );
+              },
+            ),
+          ],
+        );
+      },
+    );
+  },
+),
       const SizedBox(width: 250.0),
       IconButton(
   icon: const Icon(Icons.add),
@@ -158,7 +185,6 @@ class _PrincipalePageState extends State<PrincipalePage> {
     IconButton(
       icon: const Icon(Icons.exit_to_app),
       onPressed: () async {
-        // Supprimer les informations de connexion enregistrées
         SharedPreferences prefs = await SharedPreferences.getInstance();
         await prefs.clear();
         Navigator.push(
@@ -172,78 +198,80 @@ class _PrincipalePageState extends State<PrincipalePage> {
       ),
       body: isLoading
           ? Container(
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 color: Colors.white,
-                border: Border.all(color: Colors.blue, width: 2),
-                image: const DecorationImage(
+                image: DecorationImage(
                   image: AssetImage('assets/background.png'),
                   fit: BoxFit.cover,
                 ),
               ),
               child: const Center(
-                child: CircularProgressIndicator(), // Garder le CircularProgress ici
+                child: CircularProgressIndicator(), 
               ),
             )
           : Container(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                border: Border.all(color: Colors.blue, width: 2),
-                image: const DecorationImage(
-                  image: AssetImage('assets/background.png'),
-                  fit: BoxFit.cover,
-                ),
-              ),
-              child: GridView.builder(
-                padding: const EdgeInsets.all(10.0),
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 4,
-                  crossAxisSpacing: 10.0,
-                  mainAxisSpacing: 10.0,
-                  childAspectRatio: 1,
-                ),
-                itemCount: tools.length,
-                itemBuilder: (context, index) {
-                  final GlobalKey itemKey = GlobalKey();
-                  bool? stateAvailability = tools[index].availability;
-                  final String textAvailability = stateAvailability == true ? 'Disponible' : 'Indisponible';
 
-                  return InkWell(
-                    key: itemKey,
-                    onTap: () => _showCasierOptions(context, index, itemKey, isAdmin),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        border: Border.all(color: Colors.white, width: 2),
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              'Casier : ${tools[index].locker.id}',
-                              style: const TextStyle(
-                                color: Colors.white,
-                              ),
-                            ),
-                            Text(
-                              'Outil : ${tools[index].name}',
-                              style: const TextStyle(
-                                color: Colors.white,
-                              ),
-                            ),
-                            Text(
-                              'État : $textAvailability',
-                              style: const TextStyle(
-                                color: Colors.white,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  );
-                },
+              child: GridView.builder(
+  padding: const EdgeInsets.all(30.0), // Ajoute une marge uniforme autour de la grille
+  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+    crossAxisCount: 4,
+    crossAxisSpacing: 30.0,
+    mainAxisSpacing: 30.0,
+    childAspectRatio: 1,
+  ),
+  itemCount: tools.length,
+  itemBuilder: (context, index) {
+    final GlobalKey itemKey = GlobalKey();
+    bool? stateAvailability = tools[index].availability;
+    final String textAvailability = stateAvailability == true ? 'Disponible' : 'Indisponible';
+
+    return InkWell(
+      key: itemKey,
+      onTap: () => _showCasierOptions(context, index, itemKey, isAdmin),
+      child: Container(
+        decoration: BoxDecoration(
+          border: Border.all(
+            color: tools[index].availability ? Colors.green : Colors.red,
+            width: 2,
+          ),
+          borderRadius: BorderRadius.circular(10),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(1),
+              blurRadius: 10,
+              blurStyle: BlurStyle.outer, 
+            ),
+          ],
+        ),
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                'Casier : ${tools[index].locker.id}',
+                style: const TextStyle(
+                  color: Colors.black,
+                ),
               ),
+              Text(
+                'Outil : ${tools[index].name}',
+                style: const TextStyle(
+                  color: Colors.black,
+                ),
+              ),
+              Text(
+                'État : $textAvailability',
+                style: const TextStyle(
+                  color: Colors.black,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  },
+)
             ),
     );
   }
@@ -286,11 +314,10 @@ class _PrincipalePageState extends State<PrincipalePage> {
 
     switch (selection) {
       case 'ouvrir':
-        // Logique pour ouvrir le casier
-        // Mettre à jour la disponibilité de l'outil
-        print('Ouvrir casier');
-        //
-        break;
+        //post mqtt
+        tools[index].availability = !tools[index].availability;
+        print({tools[index].availability}.toString());
+        print('Ouvrir casier ${tools[index].locker.id}');
       case 'informations':
         _showToolInformationDialog(context, tools[index]);
         break;
