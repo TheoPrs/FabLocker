@@ -95,10 +95,28 @@ class _PrincipalePageState extends State<PrincipalePage> {
         title: const Text('Page d\'accueil'),
 
         actions: [
-          if (isAdmin) ...[
-            IconButton(
-              icon: const Icon(Icons.delete_forever_outlined),
-
+    if (isAdmin) ...[
+      IconButton(
+        icon: const Icon(Icons.delete_forever_outlined),
+        onPressed: () {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Supprimer un élément'),
+          content: const Text('Que souhaitez-vous supprimer ?'),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Supprimer un objet'),
+              onPressed: (){
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const removeItems()), //remove items
+                );
+              },
+            ),
+            TextButton(
+              child: const Text('Supprimer un utilisateur'),
               onPressed: () {
                 Navigator.push(
                   context,
@@ -106,81 +124,84 @@ class _PrincipalePageState extends State<PrincipalePage> {
                 );
               },
             ),
-            const SizedBox(width: 250.0),
-            IconButton(
-              icon: const Icon(Icons.add),
+          ],
+        );
+      },
+    );
+  },
+      ),
+      const SizedBox(width: 250.0),
+      IconButton(
+  icon: const Icon(Icons.add),
+  onPressed: () {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Ajouter un nouvel élément'),
+          content: const Text('Que souhaitez-vous ajouter ?'),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Ajouter un casier'),
+              onPressed: () async {
+                
+                try{
+                  SharedPreferences prefs = await SharedPreferences.getInstance();
+                  String? userToken = prefs.getString('token');
+                  final response = await http.post(
+                        Uri.parse('http://localhost:3000/api/lockers'),
+                        headers: <String, String>{
+                          'Content-Type': 'application/json; charset=UTF-8',
+                          'Authorization' : 'Bearer $userToken',
+                        },
+                      );
+                      if (response.statusCode == 201) {
+                        print('Objet créé avec succès !');
+                        Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => addItemsPage()),
+                        );
+                      } else{
+                        print("Erreur");
+                      }
+                }catch(e){
+                  print('Erreur lors de la requête: $e');
+                }
+                
+              },
+            ),
+            TextButton(
+              child: const Text('Ajouter un objet'),
               onPressed: () {
-                showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return AlertDialog(
-                      title: const Text('Ajouter un nouvel élément'),
-                      content: const Text('Que souhaitez-vous ajouter ?'),
-                      actions: <Widget>[
-                        TextButton(
-                          child: const Text('Ajouter un casier'),
-                          onPressed: () async {
-                            try {
-                              SharedPreferences prefs =
-                                  await SharedPreferences.getInstance();
-                              String? userToken = prefs.getString('token');
-                              final response = await http.post(
-                                Uri.parse(
-                                    'http://localhost:3000/api/lockers/add'),
-                                headers: <String, String>{
-                                  'Content-Type':
-                                      'application/json; charset=UTF-8',
-                                  'Authorization': 'Bearer $userToken',
-                                },
-                              );
-                              if (response.statusCode == 201) {
-                                print('Objet créé avec succès !');
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => addItemsPage()),
-                                );
-                              } else {
-                                print("Erreur");
-                              }
-                            } catch (e) {
-                              print('Erreur lors de la requête: $e');
-                            }
-                          },
-                        ),
-                        TextButton(
-                          child: const Text('Ajouter un objet'),
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => addItemsPage()),
-                            );
-                          },
-                        ),
-                      ],
-                    );
-                  },
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => addItemsPage()),
                 );
               },
             ),
           ],
-          const SizedBox(width: 250.0),
-          IconButton(
-            icon: const Icon(Icons.exit_to_app),
-            onPressed: () async {
-              SharedPreferences prefs = await SharedPreferences.getInstance();
-              await prefs.clear();
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const connexionPage()),
-              );
-            },
-          ),
-          const SizedBox(width: 150.0),
-        ],
-      ),
-      body: isLoading
+        );
+      },
+    );
+  },
+),
+    ],
+    const SizedBox(width: 250.0),
+    IconButton(
+      icon: const Icon(Icons.exit_to_app),
+      onPressed: () async {
+        // Supprimer les informations de connexion enregistrées
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        await prefs.clear();
+        Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const connexionPage()),
+                );
+      },
+    ),
+    const SizedBox(width: 150.0),
+  ],
+      ),      body: isLoading
           ? const Center(
               child: CircularProgressIndicator(),
             )
