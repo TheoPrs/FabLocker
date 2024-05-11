@@ -318,7 +318,6 @@ class _PrincipalePageState extends State<PrincipalePage> {
                     data: tools[index].locker.id,
                   )),
         );
-        print('Navigation vers la page Historique');
         break;
       default:
     }

@@ -3,7 +3,8 @@ class Historique {
   final String item;
   final String utilisateur;
   final DateTime dateEmprunt;
-  DateTime dateRetour;
+  final DateTime dateRetourPrevu;
+  final DateTime dateRetour;
 
-  Historique(this.casier,this.item, this.utilisateur, this.dateEmprunt,this.dateRetour);
+  Historique(this.casier, this.item, this.utilisateur, this.dateEmprunt, this.dateRetourPrevu, this.dateRetour);
 }
