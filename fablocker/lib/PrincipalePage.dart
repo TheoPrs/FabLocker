@@ -13,7 +13,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'addItemsPage.dart';
 import 'Style/style.dart'; // Importation du fichier de styles
 import 'remove_item.dart';
-import 'package:animated_background/animated_background.dart';
 
 
 
