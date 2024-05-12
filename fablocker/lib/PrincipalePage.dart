@@ -1,5 +1,3 @@
-// ignore_for_file: use_build_context_synchronously, avoid_print, use_super_parameters, library_private_types_in_public_api
-
 import 'dart:convert';
 import 'package:fablocker/ConnexionPage.dart';
 import 'package:fablocker/remove_user.dart';
@@ -11,10 +9,9 @@ import 'class/locker.dart';
 import 'class/toolInfos.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'addItemsPage.dart';
-import 'Style/style.dart'; // Importation du fichier de styles
+import 'Style/style.dart';
 import 'remove_item.dart';
-
-
+import 'widgets/bubbleBackground.dart';
 
 List<ToolInfo> tools = [];
 
@@ -43,7 +40,7 @@ class PrincipalePage extends StatefulWidget {
 
 class _PrincipalePageState extends State<PrincipalePage> {
   bool isLoading = true;
-  bool isAdmin = false; 
+  bool isAdmin = false;
 
   @override
   void initState() {
@@ -58,22 +55,18 @@ class _PrincipalePageState extends State<PrincipalePage> {
 
     if (userToken != null) {
       Map<String, dynamic> payload = Jwt.parseJwt(userToken);
-      if (payload['role'] == 'admin') {
-        setState(() {
-          isAdmin = true;
-        });
-      } else {
-        setState(() {
-          isAdmin = false;
-        });
-      }
+      setState(() {
+        isAdmin = payload['role'] == 'admin';
+      });
 
       Map<String, String> headers = {
         'Content-Type': 'application/json; charset=UTF-8',
         'Authorization': 'Bearer $userToken',
       };
-      final response = await http
-          .get(Uri.parse('http://localhost:3000/api/items'), headers: headers);
+      final response = await http.get(
+        Uri.parse('http://localhost:3000/api/items'),
+        headers: headers,
+      );
       if (response.statusCode == 200) {
         final jsonData = response.body;
         setState(() {
@@ -94,191 +87,181 @@ class _PrincipalePageState extends State<PrincipalePage> {
       appBar: AppBar(
         automaticallyImplyLeading: false,
         title: const Text('Page d\'accueil'),
-
         actions: [
-    if (isAdmin) ...[
-      IconButton(
-        icon: const Icon(Icons.delete_forever_outlined),
-        onPressed: () {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Supprimer un élément'),
-          content: const Text('Que souhaitez-vous supprimer ?'),
-          actions: <Widget>[
-            TextButton(
-              child: const Text('Supprimer un objet'),
-              onPressed: (){
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const removeItems()), //remove items
+          if (isAdmin) ...[
+            IconButton(
+              icon: const Icon(Icons.delete_forever_outlined),
+              onPressed: () {
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: const Text('Supprimer un élément'),
+                      content: const Text('Que souhaitez-vous supprimer ?'),
+                      actions: <Widget>[
+                        TextButton(
+                          child: const Text('Supprimer un objet'),
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const removeItems(),
+                              ),
+                            );
+                          },
+                        ),
+                        TextButton(
+                          child: const Text('Supprimer un utilisateur'),
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const removeUsers(),
+                              ),
+                            );
+                          },
+                        ),
+                      ],
+                    );
+                  },
                 );
               },
             ),
-            TextButton(
-              child: const Text('Supprimer un utilisateur'),
+            const SizedBox(width: 250.0),
+            IconButton(
+              icon: const Icon(Icons.add),
               onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const removeUsers()),
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: const Text('Ajouter un nouvel élément'),
+                      content: const Text('Que souhaitez-vous ajouter ?'),
+                      actions: <Widget>[
+                        TextButton(
+                          child: const Text('Ajouter un casier'),
+                          onPressed: () async {
+                            try {
+                              SharedPreferences prefs = await SharedPreferences.getInstance();
+                              String? userToken = prefs.getString('token');
+                              final response = await http.post(
+                                Uri.parse('http://localhost:3000/api/lockers'),
+                                headers: <String, String>{
+                                  'Content-Type': 'application/json; charset=UTF-8',
+                                  'Authorization': 'Bearer $userToken',
+                                },
+                              );
+                              if (response.statusCode == 201) {
+                                print('Objet créé avec succès !');
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => addItemsPage(),
+                                  ),
+                                );
+                              } else {
+                                print('Erreur');
+                              }
+                            } catch (e) {
+                              print('Erreur lors de la requête: $e');
+                            }
+                          },
+                        ),
+                        TextButton(
+                          child: const Text('Ajouter un objet'),
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => addItemsPage()),
+                            );
+                          },
+                        ),
+                      ],
+                    );
+                  },
                 );
               },
             ),
           ],
-        );
-      },
-    );
-  },
-      ),
-      const SizedBox(width: 250.0),
-      IconButton(
-  icon: const Icon(Icons.add),
-  onPressed: () {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Ajouter un nouvel élément'),
-          content: const Text('Que souhaitez-vous ajouter ?'),
-          actions: <Widget>[
-            TextButton(
-              child: const Text('Ajouter un casier'),
-              onPressed: () async {
-                
-                try{
-                  SharedPreferences prefs = await SharedPreferences.getInstance();
-                  String? userToken = prefs.getString('token');
-                  final response = await http.post(
-                        Uri.parse('http://localhost:3000/api/lockers'),
-                        headers: <String, String>{
-                          'Content-Type': 'application/json; charset=UTF-8',
-                          'Authorization' : 'Bearer $userToken',
-                        },
-                      );
-                      if (response.statusCode == 201) {
-                        print('Objet créé avec succès !');
-                        Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => addItemsPage()),
-                        );
-                      } else{
-                        print("Erreur");
-                      }
-                }catch(e){
-                  print('Erreur lors de la requête: $e');
-                }
-                
-              },
-            ),
-            TextButton(
-              child: const Text('Ajouter un objet'),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => addItemsPage()),
-                );
-              },
-            ),
-          ],
-        );
-      },
-    );
-  },
-),
-    ],
-    const SizedBox(width: 250.0),
-    IconButton(
-      icon: const Icon(Icons.exit_to_app),
-      onPressed: () async {
-        // Supprimer les informations de connexion enregistrées
-        SharedPreferences prefs = await SharedPreferences.getInstance();
-        await prefs.clear();
-        Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const connexionPage()),
-                );
-      },
-    ),
-    const SizedBox(width: 150.0),
-  ],
-      ),      body: isLoading
-          ? const Center(
-              child: CircularProgressIndicator(),
-            )
-          : GridView.builder(
-              padding: const EdgeInsets.all(30.0),
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 4,
-                crossAxisSpacing: 30.0,
-                mainAxisSpacing: 30.0,
-                childAspectRatio: 1,
-              ),
-              itemCount: tools.length,
-itemBuilder: (context, index) {
-  final GlobalKey itemKey = GlobalKey();
-  bool? stateAvailability = tools[index].availability;
-  final String textAvailability =
-      stateAvailability == true ? 'Disponible' : 'Indisponible';
-
-return InkWell(
-  key: itemKey,
-  onTap: () => _showCasierOptions(context, index, itemKey, isAdmin),
-  child: Container(
-    decoration: getToolContainerDecoration(tools[index].availability),
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch, 
-      children: [
-        Container(
-          decoration: getCasierHeaderDecoration(), 
-          padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-          child: Text(
-            'Casier ${tools[index].locker.id}',
-            style: basicText.copyWith(color: Colors.white), 
-            textAlign: TextAlign.center,
+          const SizedBox(width: 250.0),
+          IconButton(
+            icon: const Icon(Icons.exit_to_app),
+            onPressed: () async {
+              SharedPreferences prefs = await SharedPreferences.getInstance();
+              await prefs.clear();
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const connexionPage()),
+              );
+            },
           ),
-        ),
-        Expanded(
-          child: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
+          const SizedBox(width: 150.0),
+        ],
+      ),
+      body: isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : Stack(
               children: [
-                Text(
-                  'Outil : ${tools[index].name}',
-                  style: basicText,
-                ),
-                Text(
-                  'État : $textAvailability',
-                  style: basicText,
+                BubbleBackground(),
+                GridView.builder(
+                  padding: const EdgeInsets.all(30.0),
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 4,
+                    crossAxisSpacing: 30.0,
+                    mainAxisSpacing: 30.0,
+                    childAspectRatio: 1,
+                  ),
+                  itemCount: tools.length,
+                  itemBuilder: (context, index) {
+                    final GlobalKey itemKey = GlobalKey();
+                    bool? stateAvailability = tools[index].availability;
+                    final String textAvailability = stateAvailability == true ? 'Disponible' : 'Indisponible';
+
+                    return InkWell(
+                      key: itemKey,
+                      onTap: () => _showCasierOptions(context, index, itemKey, isAdmin),
+                      child: Container(
+                        decoration: getToolContainerDecoration(tools[index].availability),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            Container(
+                              decoration: getCasierHeaderDecoration(),
+                              padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                              child: Text(
+                                'Casier ${tools[index].locker.id}',
+                                style: basicText.copyWith(color: Colors.white),
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                            Expanded(
+                              child: Center(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text('Outil : ${tools[index].name}', style: basicText),
+                                    Text('État : $textAvailability', style: basicText),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
                 ),
               ],
             ),
-          ),
-        ),
-      ],
-    ),
-  ),
-);
-
-},
-            ),
     );
-  } // Fin du build
+  }
 
-
-  void _showCasierOptions(
-      BuildContext context, int index, GlobalKey key, bool isAdmin) async {
-    // Récupère les informations de la case grâce au GlobalKey
-    final RenderBox renderBox =
-        key.currentContext?.findRenderObject() as RenderBox;
+  void _showCasierOptions(BuildContext context, int index, GlobalKey key, bool isAdmin) async {
+    final RenderBox renderBox = key.currentContext?.findRenderObject() as RenderBox;
     final Offset offset = renderBox.localToGlobal(Offset.zero);
     final Size size = renderBox.size;
-
-    // Calcule le centre de la case
     final double centerX = offset.dx + size.width / 2.4;
     final double centerY = offset.dy + size.height / 2.4;
-
-    // Crée un RelativeRect pour positionner le menu
     final RelativeRect position = RelativeRect.fromLTRB(
       centerX,
       centerY,
@@ -287,37 +270,19 @@ return InkWell(
     );
 
     List<PopupMenuEntry<String>> menuItems = [
-      const PopupMenuItem(
-        value: 'ouvrir',
-        child: Text('Ouvrir'),
-      ),
-      const PopupMenuItem(
-        value: 'informations',
-        child: Text('Informations'),
-      ),
+      const PopupMenuItem(value: 'ouvrir', child: Text('Ouvrir')),
+      const PopupMenuItem(value: 'informations', child: Text('Informations')),
     ];
 
     if (isAdmin) {
-      menuItems.add(
-        const PopupMenuItem(
-          value: 'historique',
-          child: Text('Historique'),
-        ),
-      );
+      menuItems.add(const PopupMenuItem(value: 'historique', child: Text('Historique')));
     }
 
-    final selection = await showMenu(
-      context: context,
-      position: position,
-      items: menuItems,
-    );
+    final selection = await showMenu(context: context, position: position, items: menuItems);
 
     switch (selection) {
       case 'ouvrir':
-        // Logique pour ouvrir le casier
-        // Mettre à jour la disponibilité de l'outil
         print('Ouvrir casier');
-        //
         break;
       case 'informations':
         _showToolInformationDialog(context, tools[index]);
@@ -325,12 +290,8 @@ return InkWell(
       case 'historique':
         Navigator.push(
           context,
-          MaterialPageRoute(
-              builder: (context) => HistoriquePage(
-                    data: tools[index].locker.id,
-                  )),
+          MaterialPageRoute(builder: (context) => HistoriquePage(data: tools[index].locker.id)),
         );
-        print('Navigation vers la page Historique');
         break;
       default:
     }
@@ -345,10 +306,11 @@ return InkWell(
           content: SingleChildScrollView(
             child: ListBody(
               children: <Widget>[
-                Text('Nom de l\'Outil : ${toolInfo.name}'),
-                Text('Description: ${toolInfo.description}'),
-                Text(
-                    'Durée d\'emprunt maximale : ${toolInfo.borrow_duration} jours'),
+                Text('Nom : ${toolInfo.name}'),
+                Text('Casier : ${toolInfo.locker.id}'),
+                Text('Durée d\'emprunt : ${toolInfo.borrow_duration}'),
+                Text('Description : ${toolInfo.description}'),
+                Text('Poids : ${toolInfo.weight} kg'),
               ],
             ),
           ),
@@ -365,3 +327,4 @@ return InkWell(
     );
   }
 }
+
