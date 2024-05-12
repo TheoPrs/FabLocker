@@ -13,6 +13,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'addItemsPage.dart';
 import 'Style/style.dart'; // Importation du fichier de styles
 import 'remove_item.dart';
+import 'package:animated_background/animated_background.dart';
+
 
 
 List<ToolInfo> tools = [];
@@ -214,45 +216,56 @@ class _PrincipalePageState extends State<PrincipalePage> {
                 childAspectRatio: 1,
               ),
               itemCount: tools.length,
-              itemBuilder: (context, index) {
-                final GlobalKey itemKey = GlobalKey();
-                bool? stateAvailability = tools[index].availability;
-                final String textAvailability =
-                    stateAvailability == true ? 'Disponible' : 'Indisponible';
+itemBuilder: (context, index) {
+  final GlobalKey itemKey = GlobalKey();
+  bool? stateAvailability = tools[index].availability;
+  final String textAvailability =
+      stateAvailability == true ? 'Disponible' : 'Indisponible';
 
-                return InkWell(
-                  key: itemKey,
-                  onTap: () =>
-                      _showCasierOptions(context, index, itemKey, isAdmin),
-                  child: Container(
-                    decoration:
-                        getToolContainerDecoration(tools[index].availability),
-                    child: Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            'Casier : ${tools[index].locker.id}',
-                            style: basicText,
-                          ),
-                          Text(
-                            'Outil : ${tools[index].name}',
-                            style: basicText,
-                          ),
-                          Text(
-                            'État : $textAvailability',
-                            style: basicText,
-                          ),
-                        ],
+return InkWell(
+  key: itemKey,
+  onTap: () => _showCasierOptions(context, index, itemKey, isAdmin),
+  child: Container(
+    decoration: getToolContainerDecoration(tools[index].availability),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch, 
+      children: [
+        Container(
+          decoration: getCasierHeaderDecoration(), 
+          padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+          child: Text(
+            'Casier ${tools[index].locker.id}',
+            style: basicText.copyWith(color: Colors.white), 
+            textAlign: TextAlign.center,
+          ),
+        ),
+        Expanded(
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  'Outil : ${tools[index].name}',
+                  style: basicText,
+                ),
+                Text(
+                  'État : $textAvailability',
+                  style: basicText,
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    ),
+  ),
+);
 
-                      ),
-                    ),
-                  ),
-                );
-              },
+},
             ),
     );
-  }
+  } // Fin du build
+
 
   void _showCasierOptions(
       BuildContext context, int index, GlobalKey key, bool isAdmin) async {
