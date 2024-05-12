@@ -56,6 +56,25 @@ BoxDecoration getToolContainerDecoration(bool availability) {
   );
 }
 
+BoxDecoration getCasierHeaderDecoration() {
+  return BoxDecoration(
+     color: Color(0xFFA8A8A8), // Définit la couleur de fond
+    borderRadius: BorderRadius.only(
+      topLeft: Radius.circular(10), // Arrondit les coins en haut à gauche
+      topRight: Radius.circular(10), // Arrondit les coins en haut à droite
+    ),
+    boxShadow: [
+      BoxShadow(
+        color: Colors.black.withOpacity(0.5),
+        spreadRadius: 1,
+        blurRadius: 2,
+        offset: Offset(0, 1), // changes position of shadow
+      ),
+    ],
+  );
+}
+
+
 // Style pour les boutons d'ajout
 final ButtonStyle addButtonStyle = ElevatedButton.styleFrom(
   backgroundColor: Colors.blue, // Couleur de fond
