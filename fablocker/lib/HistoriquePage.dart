@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously, use_super_parameters, library_private_types_in_public_api, unused_local_variable, prefer_const_constructors
+
 import 'dart:convert';
 import 'package:fablocker/PrincipalePage.dart';
 import 'package:flutter/material.dart';
@@ -14,13 +16,15 @@ List<Historique> parseData(dynamic jsonData) {
   if (jsonData != null && jsonData is List) {
     for (var histo in jsonData) {
       if (histo != null && histo is Map<String, dynamic>) {
-        String id = histo['id'].toString() ?? '';
-        String item = histo['item']['name'].toString() ?? '';
-        String utilisateur = histo['user']['email'].toString() ?? '';
+        String id = histo['id'].toString();
+        String item = histo['item']['name'].toString();
+        String utilisateur = histo['user']['email'].toString();
         DateTime? startDate = histo['startDate'] != null ? DateTime.parse(histo['startDate']) : null;
         DateTime? endDate = histo['endDate'] != null ? DateTime.parse(histo['endDate']) : null;
         DateTime? returnDate = histo['returnDate'] != null ? DateTime.parse(histo['returnDate']) : null;
-        parsedData.add(Historique(int.tryParse(id) ?? 0, item, utilisateur, startDate!, endDate!, returnDate!));
+        int dureeAutorisee = histo['item']['borrow_duration'];
+        int dureeEmprunt = endDate!.difference(startDate!).inDays + 1;
+        parsedData.add(Historique(int.tryParse(id) ?? 0, item, utilisateur, startDate, endDate, returnDate!, dureeAutorisee));
 
       }
     }
@@ -68,9 +72,6 @@ class _HistoriquePageState extends State<HistoriquePage> {
             setState(() {
               historiqueList = parseData(jsonData);
               _isLoading = false;
-              print(response.body);
-              print('ici222');
-              print(historiqueList);
             });
           } else {
             // La réponse est un objet, encapsule-le dans un tableau et parse les données
@@ -78,16 +79,12 @@ class _HistoriquePageState extends State<HistoriquePage> {
             setState(() {
               historiqueList = parseData(jsonDataList);
               _isLoading = false;
-              print(response.body);
-              print('ici222');
-              print(historiqueList);
             });
           }
         } else {
           // La réponse ne contient pas de données
           setState(() {
             _isLoading = false;
-            print('ici');
           });
           // Gérer le cas où la réponse ne contient pas de données
           showDialog(
@@ -176,12 +173,12 @@ class _HistoriquePageState extends State<HistoriquePage> {
                             style: basicText),
                         Text('Date emprunt : $formattedDateTimeLoan',
                             style: basicText),
-                        if (historique.dateRetour == zeroDateTime)
-                          // Vérifie si la date de retour est égale à DateTime(0,0,0)
-                          Text(messageEmprunt, style: basicText)
-                        else
-                          Text('Date retour : $formattedDateTimeReturn \n',
+                        Text('Date retour : $formattedDateTimeReturn',
                               style: basicText),
+                        Text('Durée autorisée pour l\'objet : ${historique.dureeAutorisee} jours',
+                            style: basicText),
+                        Text('Durée de l\'emprunt : $dureeEmprunt jours',
+                            style: basicText),  
                       ],
                     ),
                   );
