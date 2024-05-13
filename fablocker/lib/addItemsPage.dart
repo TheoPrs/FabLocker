@@ -1,5 +1,5 @@
 // ignore_for_file: camel_case_types, use_build_context_synchronously
-
+import 'widgets/bubbleBackground.dart';
 import 'dart:convert';
 import 'package:fablocker/PrincipalePage.dart';
 import 'package:fablocker/add_items.dart';
@@ -155,7 +155,10 @@ class _addItemsPageState extends State<addItemsPage> {
           ? const Center(
             child: CircularProgressIndicator(), // Garder le CircularProgress ici
           )
-          : GridView.builder(
+            : Stack(
+            children: [
+              const BubbleBackground(),
+          GridView.builder(
             padding: const EdgeInsets.all(10.0),
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 4,
@@ -203,6 +206,8 @@ class _addItemsPageState extends State<addItemsPage> {
               }
             },
 
+          ),
+            ],
           ),
     );
   }
