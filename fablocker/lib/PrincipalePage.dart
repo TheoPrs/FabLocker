@@ -142,12 +142,14 @@ class _PrincipalePageState extends State<PrincipalePage> {
                           child: const Text('Ajouter un casier'),
                           onPressed: () async {
                             try {
-                              SharedPreferences prefs = await SharedPreferences.getInstance();
+                              SharedPreferences prefs =
+                                  await SharedPreferences.getInstance();
                               String? userToken = prefs.getString('token');
                               final response = await http.post(
                                 Uri.parse('http://localhost:3000/api/lockers'),
                                 headers: <String, String>{
-                                  'Content-Type': 'application/json; charset=UTF-8',
+                                  'Content-Type':
+                                      'application/json; charset=UTF-8',
                                   'Authorization': 'Bearer $userToken',
                                 },
                               );
@@ -172,7 +174,8 @@ class _PrincipalePageState extends State<PrincipalePage> {
                           onPressed: () {
                             Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => addItemsPage()),
+                              MaterialPageRoute(
+                                  builder: (context) => addItemsPage()),
                             );
                           },
                         ),
@@ -215,19 +218,24 @@ class _PrincipalePageState extends State<PrincipalePage> {
                   itemBuilder: (context, index) {
                     final GlobalKey itemKey = GlobalKey();
                     bool? stateAvailability = tools[index].availability;
-                    final String textAvailability = stateAvailability == true ? 'Disponible' : 'Indisponible';
+                    final String textAvailability = stateAvailability == true
+                        ? 'Disponible'
+                        : 'Indisponible';
 
                     return InkWell(
                       key: itemKey,
-                      onTap: () => _showCasierOptions(context, index, itemKey, isAdmin),
+                      onTap: () =>
+                          _showCasierOptions(context, index, itemKey, isAdmin),
                       child: Container(
-                        decoration: getToolContainerDecoration(tools[index].availability),
+                        decoration: getToolContainerDecoration(
+                            tools[index].availability),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
                             Container(
                               decoration: getCasierHeaderDecoration(),
-                              padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 8.0, horizontal: 16.0),
                               child: Text(
                                 'Casier ${tools[index].locker.id}',
                                 style: basicText.copyWith(color: Colors.white),
@@ -239,8 +247,34 @@ class _PrincipalePageState extends State<PrincipalePage> {
                                 child: Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    Text('Outil : ${tools[index].name}', style: basicText),
-                                    Text('État : $textAvailability', style: basicText),
+                                    RichText(
+                                      text: TextSpan(
+                                        children: [
+                                          TextSpan(
+                                            text: 'Outil : ',
+                                            style: basicText,
+                                          ),
+                                          TextSpan(
+                                            text: '${tools[index].name}',
+                                            style: boldText,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    RichText(
+                                      text: TextSpan(
+                                        children: [
+                                          TextSpan(
+                                            text: 'État : ',
+                                            style: basicText,
+                                          ),
+                                          TextSpan(
+                                            text: '$textAvailability',
+                                            style: boldText,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
                                   ],
                                 ),
                               ),
@@ -256,8 +290,10 @@ class _PrincipalePageState extends State<PrincipalePage> {
     );
   }
 
-  void _showCasierOptions(BuildContext context, int index, GlobalKey key, bool isAdmin) async {
-    final RenderBox renderBox = key.currentContext?.findRenderObject() as RenderBox;
+  void _showCasierOptions(
+      BuildContext context, int index, GlobalKey key, bool isAdmin) async {
+    final RenderBox renderBox =
+        key.currentContext?.findRenderObject() as RenderBox;
     final Offset offset = renderBox.localToGlobal(Offset.zero);
     final Size size = renderBox.size;
     final double centerX = offset.dx + size.width / 2.4;
@@ -275,10 +311,12 @@ class _PrincipalePageState extends State<PrincipalePage> {
     ];
 
     if (isAdmin) {
-      menuItems.add(const PopupMenuItem(value: 'historique', child: Text('Historique')));
+      menuItems.add(
+          const PopupMenuItem(value: 'historique', child: Text('Historique')));
     }
 
-    final selection = await showMenu(context: context, position: position, items: menuItems);
+    final selection =
+        await showMenu(context: context, position: position, items: menuItems);
 
     switch (selection) {
       case 'ouvrir':
@@ -290,7 +328,9 @@ class _PrincipalePageState extends State<PrincipalePage> {
       case 'historique':
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => HistoriquePage(data: tools[index].locker.id)),
+          MaterialPageRoute(
+              builder: (context) =>
+                  HistoriquePage(data: tools[index].locker.id)),
         );
         break;
       default:
@@ -327,4 +367,3 @@ class _PrincipalePageState extends State<PrincipalePage> {
     );
   }
 }
-
