@@ -1,5 +1,6 @@
 // ignore_for_file: camel_case_types, use_super_parameters, library_private_types_in_public_api, avoid_print
 
+import 'package:fablocker/ConnexionPage.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'Style/style.dart';
@@ -136,7 +137,7 @@ class _addUsersState extends State<addUsers> {
       
                   Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => PrincipalePage()),
+                      MaterialPageRoute(builder: (context) => const connexionPage()),
                     );
       
       

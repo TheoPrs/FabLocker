@@ -2,6 +2,7 @@
 
 import 'dart:convert';
 import 'package:fablocker/PrincipalePage.dart';
+import 'package:fablocker/add_user.dart';
 import 'package:flutter/material.dart';
 import 'Style/style.dart';
 import 'package:http/http.dart' as http;
@@ -109,6 +110,31 @@ class _connexionPageState extends State<connexionPage> {
               },
               child: const Text('Se connecter'),
             ),
+            SizedBox(height: 30),
+            ElevatedButton(onPressed: () async {
+              try {
+                final response = await http.post(
+                  Uri.parse('http://localhost:3000/auth/login'),
+                  body: {
+
+                  },
+                );
+                if (response.statusCode == 200) {
+                  print("test");
+                } 
+                } catch (e) {
+                  _showSnackBar('Erreur de connexion');
+                }
+              }, 
+            child: const Text('Scannez votre carte JUNIA')),
+            const SizedBox(height: 30),
+            ElevatedButton(onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => addUsers()),
+              );
+            }, 
+            child: const Text('Créez un compte')),
           ],
         ),
       ),
