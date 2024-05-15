@@ -8,6 +8,7 @@ import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
 import 'class/historique.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'widgets/bubbleBackground.dart';
 
 List<Historique> historiqueList = [];
 
@@ -146,7 +147,10 @@ class _HistoriquePageState extends State<HistoriquePage> {
       ),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
-          : ListView.builder(
+            : Stack(
+            children: [
+              const BubbleBackground(),
+               ListView.builder(
               itemCount: historiqueList.length,
               itemBuilder: (context, index) {
                 final historique = historiqueList[index];
@@ -186,6 +190,8 @@ class _HistoriquePageState extends State<HistoriquePage> {
                   return Container();
                 }
               },
+               ),
+            ],
             ),
     );
   }

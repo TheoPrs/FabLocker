@@ -1,10 +1,10 @@
 // lib/styles.dart
 import 'package:flutter/material.dart';
 
-// Couleurs personnalisées pour la disponibilité
-const Color greenPastel = Color.fromARGB(200, 144, 238, 144); // vert pastel
-const Color redPastel = Color.fromARGB(127, 255, 160, 122); // rouge pastel
-const Color grayPastel = Color.fromARGB(255, 217, 218, 219); // gris pastel
+
+const Color greenPastel = Color.fromARGB(235, 144, 238, 144); // vert pastel, plus opaque
+const Color redPastel = Color.fromARGB(235, 255, 160, 122); // rouge pastel, plus opaque
+const Color grayPastel = Color.fromARGB(235, 217, 218, 219); // gris pastel, complètement opaque
 
 // Styles de texte
 const TextStyle titleStyle = TextStyle(

@@ -67,7 +67,8 @@ class _BubbleBackgroundState extends State<BubbleBackground> with TickerProvider
               x: random.nextDouble() * MediaQuery.of(context).size.width,
               y: random.nextDouble() * MediaQuery.of(context).size.height,
               size: random.nextDouble() * 30 + 12,
-              color: const Color.fromARGB(255, 201, 191, 191).withOpacity(0.2 + random.nextDouble() * 0.1),
+              color: const Color.fromARGB(255, 129, 125, 125).withOpacity(0.3 + random.nextDouble() * 0.2),
+
               speedX: random.nextDouble() * 4 - 2,
               speedY: random.nextDouble() * 4 - 2,
             );
