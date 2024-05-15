@@ -1,4 +1,4 @@
-// ignore_for_file: use_build_context_synchronously, avoid_print
+// ignore_for_file: use_build_context_synchronously, avoid_print, unnecessary_string_interpolations
 
 import 'dart:convert';
 import 'package:fablocker/ConnexionPage.dart';
@@ -209,7 +209,7 @@ class _PrincipalePageState extends State<PrincipalePage> {
           ? const Center(child: CircularProgressIndicator())
           : Stack(
               children: [
-                BubbleBackground(),
+                const BubbleBackground(),
                 GridView.builder(
                   padding: const EdgeInsets.all(30.0),
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -254,7 +254,7 @@ class _PrincipalePageState extends State<PrincipalePage> {
                                     RichText(
                                       text: TextSpan(
                                         children: [
-                                          TextSpan(
+                                          const TextSpan(
                                             text: 'Outil : ',
                                             style: basicText,
                                           ),
@@ -268,7 +268,7 @@ class _PrincipalePageState extends State<PrincipalePage> {
                                     RichText(
                                       text: TextSpan(
                                         children: [
-                                          TextSpan(
+                                          const TextSpan(
                                             text: 'État : ',
                                             style: basicText,
                                           ),
@@ -310,7 +310,15 @@ class _PrincipalePageState extends State<PrincipalePage> {
     );
 
     List<PopupMenuEntry<String>> menuItems = [
-      const PopupMenuItem(value: 'ouvrir', child: Text('Ouvrir')),
+      tools[index].availability ?
+        const PopupMenuItem(
+          value: 'ouvrir',
+          child: Text('Prendre l\'objet'),
+        )
+      : const PopupMenuItem(
+          value: 'ouvrir',
+          child: Text('Rendre l\'objet'),
+        ),
       const PopupMenuItem(value: 'informations', child: Text('Informations')),
     ];
 
@@ -371,46 +379,47 @@ class _PrincipalePageState extends State<PrincipalePage> {
             print('Erreur lors de la requête: $e');
           }}
           else {
-          try {
-            SharedPreferences prefs = await SharedPreferences.getInstance();
-            String? userToken = prefs.getString('token');
-            int lockerId = tools[index].locker.id;
-            final response = await http.get(
-              Uri.parse('http://localhost:3000/api/mqtt/openLocker/$lockerId'),
-              headers: <String, String>{
-                'Content-Type': 'application/json; charset=UTF-8',
-                'Authorization': 'Bearer $userToken',
-              },
-            );
-            if (response.statusCode == 200) {
-              try{
-                final response = await http.put(
-                  Uri.parse('http://localhost:3000/api/borrows/$lockerId/return'),
-                  headers: <String, String>{
-                    'Content-Type': 'application/json; charset=UTF-8',
-                    'Authorization': 'Bearer $userToken',
-                  },
-                );
-                if (response.statusCode == 200) {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const PrincipalePage(),
-                    ),
+            try {
+              SharedPreferences prefs = await SharedPreferences.getInstance();
+              String? userToken = prefs.getString('token');
+              int lockerId = tools[index].locker.id;
+              final response = await http.get(
+                Uri.parse('http://localhost:3000/api/mqtt/openLocker/$lockerId'),
+                headers: <String, String>{
+                  'Content-Type': 'application/json; charset=UTF-8',
+                  'Authorization': 'Bearer $userToken',
+                },
               );
-                } else {
-                  print('Erreur lors de la requête: ${response.statusCode}');
+              if (response.statusCode == 200) {
+                try{
+                  final response = await http.put(
+                    Uri.parse('http://localhost:3000/api/borrows/$lockerId/return'),
+                    headers: <String, String>{
+                      'Content-Type': 'application/json; charset=UTF-8',
+                      'Authorization': 'Bearer $userToken',
+                    },
+                  );
+                  if (response.statusCode == 200) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const PrincipalePage(),
+                      ),
+                );
+                  } else {
+                    print('Erreur lors de la requête: ${response.statusCode}');
+                  }
+                } catch (e) {
+                  print('Erreur lors de la requête: $e');
                 }
-              } catch (e) {
-                print('Erreur lors de la requête: $e');
-              }
 
-            } else {
-              print('Erreur lors de la requête: ${response.statusCode}');
+              } else {
+                print('Erreur lors de la requête: ${response.statusCode}');
+              }
+            } catch (e) {
+              print('Erreur lors de la requête: $e');
             }
-          } catch (e) {
-            print('Erreur lors de la requête: $e');
-          }}
+          }
         break;
       case 'informations':
         _showToolInformationDialog(context, tools[index]);

@@ -15,15 +15,18 @@ List<ToolInfo> parseData(String jsonData) {
   final List<dynamic> data = json.decode(jsonData);
   List<ToolInfo> parsedData = [];
   for (var item in data) {
-    parsedData.add(ToolInfo(
-      locker: Locker.fromJson(item['locker']),
-      availability: item['availability'],
-      weight: item['weight'],
-      name: item['name'],
-      borrow_duration: item['borrow_duration'],
-      description: item['description'],
-      itemId: item['id'], 
+    if(item['availability'] == true) {
+          parsedData.add(ToolInfo(
+            locker: Locker.fromJson(item['locker']),
+            availability: item['availability'],
+            weight: item['weight'],
+            name: item['name'],
+            borrow_duration: item['borrow_duration'],
+            description: item['description'],
+            itemId: item['id'], 
     ));
+    }
+
   }
   return parsedData;
 }

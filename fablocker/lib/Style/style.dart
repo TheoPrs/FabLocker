@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
 const Color greenPastel =
-    Color.fromARGB(235, 144, 238, 144); // vert pastel, plus opaque
+    Color.fromARGB(255, 144, 238, 144); // vert pastel, plus opaque
 const Color redPastel =
-    Color.fromARGB(235, 255, 160, 122); // rouge pastel, plus opaque
+    Color.fromARGB(255, 255, 160, 122); // rouge pastel, plus opaque
 const Color grayPastel =
     Color.fromARGB(235, 217, 218, 219); // gris pastel, complètement opaque
 
@@ -67,8 +67,8 @@ BoxDecoration getToolContainerDecoration(bool availability) {
 
 BoxDecoration getCasierHeaderDecoration() {
   return BoxDecoration(
-    color: Color(0xFFA8A8A8), // Définit la couleur de fond
-    borderRadius: BorderRadius.only(
+    color: const Color(0xFFA8A8A8), // Définit la couleur de fond
+    borderRadius: const BorderRadius.only(
       topLeft: Radius.circular(10), // Arrondit les coins en haut à gauche
       topRight: Radius.circular(10), // Arrondit les coins en haut à droite
     ),
