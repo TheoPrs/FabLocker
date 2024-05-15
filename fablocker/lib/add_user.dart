@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'Style/style.dart';
 import 'PrincipalePage.dart';
+import 'widgets/bubbleBackground.dart';
 
 class addUsers extends StatefulWidget {
   const addUsers({Key? key}) : super(key: key);
@@ -20,25 +21,29 @@ class _addUsersState extends State<addUsers> {
   final RegExp usernameRegExp = RegExp(r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$');
   final RegExp passwordRegExp = RegExp(r'^[a-zA-Z0-9]{8,}$');
 
-  @override
+ @override
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
         title: const Text('FabLocker'),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Align(
-              alignment: Alignment(0, -0.85),
-              child: Text(
-                'Bienvenue sur votre espace d\'inscription !',
-                style: titleStyle,
-              ),
-            ),
+      body: Stack(
+        children: [
+          const BubbleBackground(),  // Ajoute l'animation de fond avec les bulles
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: SingleChildScrollView(  // Utilisez SingleChildScrollView pour éviter le débordement
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Align(
+                    alignment: Alignment(0, -0.85),
+                    child: Text(
+                      'Bienvenue sur votre espace d\'inscription !',
+                      style: titleStyle,
+                    ),
+                  ),
             const SizedBox(height: 50.0),
             //Adresse email
             SizedBox(
@@ -159,11 +164,13 @@ class _addUsersState extends State<addUsers> {
                 }
               },
               child: const Text('Créer l\'utilisateur'),
+),
+                ],
+              ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
 }
-
