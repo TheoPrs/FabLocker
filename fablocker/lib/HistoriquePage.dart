@@ -26,10 +26,10 @@ List<Historique> parseData(dynamic jsonData) {
         int dureeAutorisee = histo['item']['borrow_duration'];
         int dureeEmprunt = endDate!.difference(startDate!).inDays + 1;
         parsedData.add(Historique(int.tryParse(id) ?? 0, item, utilisateur, startDate, endDate, returnDate!, dureeAutorisee));
-
       }
     }
   }
+  print(parsedData);
   return parsedData;
 }
 
