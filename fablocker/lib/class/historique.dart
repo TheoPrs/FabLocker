@@ -6,6 +6,7 @@ class Historique {
   final DateTime dateRetourPrevu;
   final DateTime dateRetour;
   final int dureeAutorisee;
+  
 
   Historique(this.casier, this.item, this.utilisateur, this.dateEmprunt, this.dateRetourPrevu, this.dateRetour, this.dureeAutorisee);
 }

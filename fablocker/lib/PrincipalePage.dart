@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously, avoid_print
+
 import 'dart:convert';
 import 'package:fablocker/ConnexionPage.dart';
 import 'package:fablocker/remove_user.dart';
@@ -26,6 +28,7 @@ List<ToolInfo> parseData(String jsonData) {
       name: item['name'],
       borrow_duration: item['borrow_duration'],
       description: item['description'],
+      itemId: item['id'],
     ));
   }
   return parsedData;
@@ -51,12 +54,13 @@ class _PrincipalePageState extends State<PrincipalePage> {
   Future<void> fetchData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? userToken = prefs.getString('token');
-    print(userToken);
-
+    String? userRFID = prefs.getString('rfid');
+    
     if (userToken != null) {
       Map<String, dynamic> payload = Jwt.parseJwt(userToken);
       setState(() {
         isAdmin = payload['role'] == 'admin';
+        userRFID = payload['rfid'];
       });
 
       Map<String, String> headers = {
@@ -282,7 +286,93 @@ class _PrincipalePageState extends State<PrincipalePage> {
 
     switch (selection) {
       case 'ouvrir':
-        print('Ouvrir casier');
+      if (tools[index].availability == true) {
+          try {
+            SharedPreferences prefs = await SharedPreferences.getInstance();
+            String? userToken = prefs.getString('token');
+            String? userRFID = prefs.getString('rfid');
+            int lockerId = tools[index].locker.id;
+            final response = await http.get(
+              Uri.parse('http://localhost:3000/api/mqtt/openLocker/$lockerId'),
+              headers: <String, String>{
+                'Content-Type': 'application/json; charset=UTF-8',
+                'Authorization': 'Bearer $userToken',
+              },
+            );
+            if (response.statusCode == 200) {
+              try{
+                final response = await http.post(
+                  Uri.parse('http://localhost:3000/api/borrows'),
+                  headers: <String, String>{
+                    'Content-Type': 'application/json; charset=UTF-8',
+                    'Authorization': 'Bearer $userToken',
+                  },
+                  body: jsonEncode(<String, dynamic>{
+                    "userRfid": userRFID,
+                    "itemId": tools[index].itemId,
+                  }),
+                );
+                if (response.statusCode == 201) {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const PrincipalePage(),
+                    ),
+              );
+                } else {
+                  print('Erreur lors de la requête: ${response.statusCode}');
+                }
+              } catch (e) {
+                print('Erreur lors de la requête: $e');
+              }
+
+            } else {
+              print('Erreur lors de la requête: ${response.statusCode}');
+            }
+          } catch (e) {
+            print('Erreur lors de la requête: $e');
+          }}
+          else {
+          try {
+            SharedPreferences prefs = await SharedPreferences.getInstance();
+            String? userToken = prefs.getString('token');
+            int lockerId = tools[index].locker.id;
+            final response = await http.get(
+              Uri.parse('http://localhost:3000/api/mqtt/openLocker/$lockerId'),
+              headers: <String, String>{
+                'Content-Type': 'application/json; charset=UTF-8',
+                'Authorization': 'Bearer $userToken',
+              },
+            );
+            if (response.statusCode == 200) {
+              try{
+                final response = await http.put(
+                  Uri.parse('http://localhost:3000/api/borrows/$lockerId/return'),
+                  headers: <String, String>{
+                    'Content-Type': 'application/json; charset=UTF-8',
+                    'Authorization': 'Bearer $userToken',
+                  },
+                );
+                if (response.statusCode == 200) {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const PrincipalePage(),
+                    ),
+              );
+                } else {
+                  print('Erreur lors de la requête: ${response.statusCode}');
+                }
+              } catch (e) {
+                print('Erreur lors de la requête: $e');
+              }
+
+            } else {
+              print('Erreur lors de la requête: ${response.statusCode}');
+            }
+          } catch (e) {
+            print('Erreur lors de la requête: $e');
+          }}
         break;
       case 'informations':
         _showToolInformationDialog(context, tools[index]);
