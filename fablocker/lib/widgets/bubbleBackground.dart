@@ -71,6 +71,7 @@ class _BubbleBackgroundState extends State<BubbleBackground>
                   .withOpacity(0.3 + random.nextDouble() * 0.2),
               speedX: random.nextDouble() * 4 - 2.5,
               speedY: random.nextDouble() * 4 - 2.5,
+
             );
           });
         });

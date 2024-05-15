@@ -7,6 +7,7 @@ const Color redPastel =
 const Color grayPastel =
     Color.fromARGB(235, 217, 218, 219); // gris pastel, complètement opaque
 
+
 // Styles de texte
 const TextStyle titleStyle = TextStyle(
   fontFamily: 'Montserrat',
@@ -76,7 +77,7 @@ BoxDecoration getCasierHeaderDecoration() {
         color: Colors.black.withOpacity(0.5),
         spreadRadius: 1,
         blurRadius: 2,
-        offset: Offset(0, 1), // changes position of shadow
+        offset: const Offset(0, 1), // changes position of shadow
       ),
     ],
   );
