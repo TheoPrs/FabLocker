@@ -10,7 +10,7 @@ class BubblePainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final Paint paint = Paint();
     for (final bubble in bubbles) {
-       paint.color = bubble.color;
+      paint.color = bubble.color;
       canvas.drawCircle(Offset(bubble.x, bubble.y), bubble.size, paint);
     }
   }
@@ -31,7 +31,7 @@ class Bubble {
     required this.x,
     required this.y,
     required this.size,
-     required this.color,
+    required this.color,
     required this.speedX,
     required this.speedY,
   });
@@ -44,33 +44,34 @@ class BubbleBackground extends StatefulWidget {
   _BubbleBackgroundState createState() => _BubbleBackgroundState();
 }
 
-class _BubbleBackgroundState extends State<BubbleBackground> with TickerProviderStateMixin {
+class _BubbleBackgroundState extends State<BubbleBackground>
+    with TickerProviderStateMixin {
   late AnimationController _moveController;
-  List<Bubble> bubbles = [];  // Initialisation à une liste vide
+  List<Bubble> bubbles = []; // Initialisation à une liste vide
   final random = Random();
-
-
 
   @override
   void initState() {
     super.initState();
 
-    _moveController = AnimationController(vsync: this, duration: const Duration(seconds: 1))
-      ..addListener(_updateBubblePositions)
-      ..repeat();
+    _moveController =
+        AnimationController(vsync: this, duration: const Duration(seconds: 1))
+          ..addListener(_updateBubblePositions)
+          ..repeat();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {
         setState(() {
-          bubbles = List.generate(50, (index) {
+          bubbles = List.generate(35, (index) {
             return Bubble(
               x: random.nextDouble() * MediaQuery.of(context).size.width,
               y: random.nextDouble() * MediaQuery.of(context).size.height,
               size: random.nextDouble() * 30 + 12,
-              color: const Color.fromARGB(255, 129, 125, 125).withOpacity(0.3 + random.nextDouble() * 0.2),
+              color: const Color.fromARGB(255, 129, 125, 125)
+                  .withOpacity(0.3 + random.nextDouble() * 0.2),
+              speedX: random.nextDouble() * 4 - 2.5,
+              speedY: random.nextDouble() * 4 - 2.5,
 
-              speedX: random.nextDouble() * 4 - 2,
-              speedY: random.nextDouble() * 4 - 2,
             );
           });
         });
@@ -79,13 +80,16 @@ class _BubbleBackgroundState extends State<BubbleBackground> with TickerProvider
   }
 
   void _updateBubblePositions() {
-    if (bubbles.isNotEmpty) {  // Assure que bubbles contient des éléments avant de les mettre à jour
+    if (bubbles.isNotEmpty) {
+      // Assure que bubbles contient des éléments avant de les mettre à jour
       setState(() {
         for (final bubble in bubbles) {
           bubble.x += bubble.speedX;
           bubble.y += bubble.speedY;
-          if (bubble.x < 0 || bubble.x > MediaQuery.of(context).size.width) bubble.speedX *= -1;
-          if (bubble.y < 0 || bubble.y > MediaQuery.of(context).size.height) bubble.speedY *= -1;
+          if (bubble.x < 0 || bubble.x > MediaQuery.of(context).size.width)
+            bubble.speedX *= -1;
+          if (bubble.y < 0 || bubble.y > MediaQuery.of(context).size.height)
+            bubble.speedY *= -1;
         }
       });
     }
@@ -93,10 +97,13 @@ class _BubbleBackgroundState extends State<BubbleBackground> with TickerProvider
 
   @override
   Widget build(BuildContext context) {
-    return bubbles.isNotEmpty ? CustomPaint(
-      painter: BubblePainter(bubbles: bubbles),
-      size: Size(MediaQuery.of(context).size.width, MediaQuery.of(context).size.height),
-    ) : SizedBox.shrink();  // Retourne un widget vide si bubbles est vide
+    return bubbles.isNotEmpty
+        ? CustomPaint(
+            painter: BubblePainter(bubbles: bubbles),
+            size: Size(MediaQuery.of(context).size.width,
+                MediaQuery.of(context).size.height),
+          )
+        : SizedBox.shrink(); // Retourne un widget vide si bubbles est vide
   }
 
   @override

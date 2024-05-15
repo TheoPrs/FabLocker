@@ -1,10 +1,12 @@
-// lib/styles.dart
 import 'package:flutter/material.dart';
 
+const Color greenPastel =
+    Color.fromARGB(235, 144, 238, 144); // vert pastel, plus opaque
+const Color redPastel =
+    Color.fromARGB(235, 255, 160, 122); // rouge pastel, plus opaque
+const Color grayPastel =
+    Color.fromARGB(235, 217, 218, 219); // gris pastel, complètement opaque
 
-const Color greenPastel = Color.fromARGB(235, 144, 238, 144); // vert pastel, plus opaque
-const Color redPastel = Color.fromARGB(235, 255, 160, 122); // rouge pastel, plus opaque
-const Color grayPastel = Color.fromARGB(235, 217, 218, 219); // gris pastel, complètement opaque
 
 // Styles de texte
 const TextStyle titleStyle = TextStyle(
@@ -30,6 +32,13 @@ const TextStyle basicText = TextStyle(
   fontFamily: 'Montserrat',
   fontSize: 20,
   color: Colors.black,
+);
+
+const TextStyle boldText = TextStyle(
+  fontFamily: 'Montserrat',
+  fontSize: 20,
+  color: Colors.black,
+  fontWeight: FontWeight.bold,
 );
 
 // Fonction pour obtenir la couleur de fond en fonction de la disponibilité
@@ -59,7 +68,7 @@ BoxDecoration getToolContainerDecoration(bool availability) {
 BoxDecoration getCasierHeaderDecoration() {
   return BoxDecoration(
     color: Color(0xFFA8A8A8), // Définit la couleur de fond
-    borderRadius: const BorderRadius.only(
+    borderRadius: BorderRadius.only(
       topLeft: Radius.circular(10), // Arrondit les coins en haut à gauche
       topRight: Radius.circular(10), // Arrondit les coins en haut à droite
     ),
@@ -73,7 +82,6 @@ BoxDecoration getCasierHeaderDecoration() {
     ],
   );
 }
-
 
 // Style pour les boutons d'ajout
 final ButtonStyle addButtonStyle = ElevatedButton.styleFrom(
