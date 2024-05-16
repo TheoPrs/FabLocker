@@ -1,4 +1,4 @@
-// ignore_for_file: camel_case_types, use_super_parameters, library_private_types_in_public_api, avoid_print
+// ignore_for_file: camel_case_types, use_super_parameters, library_private_types_in_public_api, avoid_print, use_build_context_synchronously
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -92,7 +92,7 @@ class _removeUsersState extends State<removeUsers> {
                   );
                   Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => PrincipalePage()),
+                      MaterialPageRoute(builder: (context) => const PrincipalePage()),
                     );
       
       
@@ -106,6 +106,10 @@ class _removeUsersState extends State<removeUsers> {
       
                     if (response.statusCode == 200) {
                       print('Profil supprimé avec succès !');
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const PrincipalePage()),
+                      );
                     } else {
                       print('Erreur lors de la supppression du profil: ${response.statusCode}');
                     }

@@ -1,6 +1,7 @@
 // ignore_for_file: camel_case_types, use_key_in_widget_constructors, non_constant_identifier_names, use_build_context_synchronously, avoid_print
 
 import 'dart:convert';
+import 'dart:math';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import './widgets/displayFloat.dart';
@@ -25,7 +26,7 @@ class _AddItemsState extends State<AddItems> {
   TextEditingController objectNameController = TextEditingController();
   TextEditingController objectDescriptionController = TextEditingController();
   TextEditingController objectLoanDurationController = TextEditingController();
-  double myValue =  999.15;
+  double myValue =  Random().nextDouble() * 10;
 
   @override
   Widget build(BuildContext context) {
@@ -126,7 +127,6 @@ class _AddItemsState extends State<AddItems> {
                     },
                   );
                   if (response.statusCode == 201) {
-                    print('Objet créé avec succès !');
                     Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => PrincipalePage()),

@@ -1,5 +1,3 @@
-// ignore_for_file: use_build_context_synchronously, use_super_parameters, library_private_types_in_public_api, unused_local_variable, prefer_const_constructors
-
 import 'dart:convert';
 import 'package:fablocker/PrincipalePage.dart';
 import 'package:flutter/material.dart';
@@ -8,7 +6,6 @@ import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
 import 'class/historique.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'widgets/bubbleBackground.dart';
 
 List<Historique> historiqueList = [];
 
@@ -20,22 +17,20 @@ List<Historique> parseData(dynamic jsonData) {
         String id = histo['id'].toString();
         String item = histo['item']['name'].toString();
         String utilisateur = histo['user']['email'].toString();
-        DateTime? startDate = histo['startDate'] != null ? DateTime.parse(histo['startDate']) : null;
-        DateTime? endDate = histo['endDate'] != null ? DateTime.parse(histo['endDate']) : null;
+        DateTime startDate = histo['startDate'];
+        DateTime endDate = histo['endDate'];
         DateTime? returnDate = histo['returnDate'] != null ? DateTime.parse(histo['returnDate']) : null;
         int dureeAutorisee = histo['item']['borrow_duration'];
         int dureeEmprunt = endDate!.difference(startDate!).inDays + 1;
-        parsedData.add(Historique(int.tryParse(id) ?? 0, item, utilisateur, startDate, endDate, returnDate!, dureeAutorisee));
+        parsedData.add(Historique(int.tryParse(id) ?? 0, item, utilisateur, startDate, endDate, returnDate!, dureeAutorisee, dureeEmprunt));
       }
     }
   }
-  print(parsedData);
   return parsedData;
 }
 
 class HistoriquePage extends StatefulWidget {
   final int data;
-
   const HistoriquePage({Key? key, required this.data}) : super(key: key);
 
   @override
@@ -44,13 +39,12 @@ class HistoriquePage extends StatefulWidget {
 
 class _HistoriquePageState extends State<HistoriquePage> {
   bool _isLoading = true;
-
+  String stringDateRetour = '';
   @override
   void initState() {
     super.initState();
     fetchData();
   }
-
   Future<void> fetchData() async {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -147,18 +141,17 @@ class _HistoriquePageState extends State<HistoriquePage> {
       ),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
-            : Stack(
-            children: [
-              const BubbleBackground(),
-               ListView.builder(
+          : ListView.builder(
               itemCount: historiqueList.length,
               itemBuilder: (context, index) {
                 final historique = historiqueList[index];
                 final zeroDateTime = DateTime(0, 0, 0);
                 final formattedDateTimeLoan = DateFormat('dd-MM-yyyy HH:mm')
                     .format(historique.dateEmprunt);
-                final formattedDateTimeReturn = DateFormat('dd-MM-yyyy HH:mm')
-                    .format(historique.dateRetour);
+                final stringDateRetour = historique.dateRetour != null
+                    ? DateFormat('dd-MM-yyyy HH:mm')
+                        .format(historique.dateRetour)
+                    : 'Objet pas encore rendu';
                 final dureeEmprunt = DateTime.now()
                     .difference(historique.dateEmprunt)
                     .inDays +
@@ -177,7 +170,7 @@ class _HistoriquePageState extends State<HistoriquePage> {
                             style: basicText),
                         Text('Date emprunt : $formattedDateTimeLoan',
                             style: basicText),
-                        Text('Date retour : $formattedDateTimeReturn',
+                        Text('Date retour : $stringDateRetour',
                               style: basicText),
                         Text('Durée autorisée pour l\'objet : ${historique.dureeAutorisee} jours',
                             style: basicText),
@@ -190,8 +183,6 @@ class _HistoriquePageState extends State<HistoriquePage> {
                   return Container();
                 }
               },
-               ),
-            ],
             ),
     );
   }

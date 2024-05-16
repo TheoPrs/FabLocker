@@ -209,7 +209,6 @@ class _removeItemsState extends State<removeItems> {
           );
           print(response.request);
           if (response.statusCode == 200) {
-            print('Objet supprimé avec succès !');
             Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => const PrincipalePage()),
