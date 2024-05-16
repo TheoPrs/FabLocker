@@ -24,6 +24,7 @@ jobs:
       - run: flutter --version
       - name: Install packages
         run: |
+             cd fablocker
              flutter config --enable-web
              flutter pub get
              flutter build web --release
