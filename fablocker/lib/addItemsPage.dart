@@ -8,7 +8,7 @@ import 'package:jwt_decode/jwt_decode.dart';
 import 'package:http/http.dart' as http;
 import 'class/locker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'connexionPage.dart';
+import 'ConnexionPage.dart';
 
 List<Locker> locks = [];
 
