@@ -1,5 +1,7 @@
 // ignore_for_file: camel_case_types, use_super_parameters, library_private_types_in_public_api, avoid_print
 
+import 'dart:math';
+
 import 'package:fablocker/ConnexionPage.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -132,7 +134,7 @@ class _addUsersState extends State<addUsers> {
                   );
       
       
-                  int rfid = 496512; 
+                  int rfid = Random().nextInt(100000); 
       
       
                   Navigator.push(
